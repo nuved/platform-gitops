@@ -1,0 +1,41 @@
+# One AppProject per workspace. Each is locked to ONLY that workspace's namespace
+# and this repo, and to a small allow-list of namespaced kinds — so a tenant's Argo
+# apps can never deploy into another workspace, into kube-system, or create
+# cluster-scoped resources.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: acmecorp-web
+  namespace: argocd
+spec:
+  description: "Tenant acmecorp — workspace web"
+  sourceRepos:
+    - https://github.com/nuved/platform-gitops.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: acmecorp-web
+  clusterResourceWhitelist: [] # no cluster-scoped resources at all
+  namespaceResourceWhitelist:
+    - { group: apps, kind: Deployment }
+    - { group: "", kind: Service }
+    - { group: "", kind: ConfigMap }
+    - { group: apps.nuved.io, kind: TieredApp }
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: acmecorp-api
+  namespace: argocd
+spec:
+  description: "Tenant acmecorp — workspace api"
+  sourceRepos:
+    - https://github.com/nuved/platform-gitops.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: acmecorp-api
+  clusterResourceWhitelist: []
+  namespaceResourceWhitelist:
+    - { group: apps, kind: Deployment }
+    - { group: "", kind: Service }
+    - { group: "", kind: ConfigMap }
+    - { group: apps.nuved.io, kind: TieredApp }

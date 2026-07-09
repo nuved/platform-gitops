@@ -1,0 +1,24 @@
+# Validation gate: runs on every PR/push, blocking manifests that fail schema or the
+# platform's Kyverno policies before Argo CD ever syncs them.
+name: validate
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install kubeconform
+        run: |
+          curl -sSL -o /tmp/kc.tar.gz \
+            https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz
+          tar -xzf /tmp/kc.tar.gz -C /usr/local/bin kubeconform
+      - name: Install kyverno CLI
+        run: |
+          curl -sSL -o /tmp/ky.tar.gz \
+            https://github.com/kyverno/kyverno/releases/latest/download/kyverno-cli_linux_x86_64.tar.gz
+          tar -xzf /tmp/ky.tar.gz -C /usr/local/bin kyverno
+      - name: Validate service manifests
+        run: ./scripts/validate.sh apps

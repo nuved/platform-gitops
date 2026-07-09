@@ -1,0 +1,38 @@
+# CI mirror of the cluster's tenancy-baseline ClusterPolicy (from tenancy-operator).
+# Same rules, but without the namespaceSelector so it validates any manifest in a PR
+# — shift-left: fail here with the same message the cluster's admission would give.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: tenancy-baseline
+spec:
+  validationFailureAction: Enforce
+  background: false
+  rules:
+    - name: disallow-privileged
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      validate:
+        message: "Privileged containers are not allowed in tenant namespaces."
+        pattern:
+          spec:
+            =(initContainers):
+              - =(securityContext):
+                  =(privileged): "false"
+            containers:
+              - =(securityContext):
+                  =(privileged): "false"
+    - name: disallow-host-namespaces
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      validate:
+        message: "hostNetwork, hostPID, and hostIPC are not allowed in tenant namespaces."
+        pattern:
+          spec:
+            =(hostNetwork): "false"
+            =(hostPID): "false"
+            =(hostIPC): "false"

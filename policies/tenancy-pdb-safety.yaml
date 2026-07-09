@@ -1,0 +1,30 @@
+# CI mirror of the cluster's tenancy-pdb-safety ClusterPolicy. Denies a PDB that
+# would block all voluntary eviction (maxUnavailable: 0 / minAvailable: 100%), which
+# stalls node drains and kops rolling upgrades.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: tenancy-pdb-safety
+spec:
+  validationFailureAction: Enforce
+  background: false
+  rules:
+    - name: block-eviction-blocking-pdb
+      match:
+        any:
+          - resources:
+              kinds: [PodDisruptionBudget]
+      validate:
+        message: >-
+          This PodDisruptionBudget would block all voluntary eviction
+          (maxUnavailable: 0 or minAvailable: 100%), which stalls node drain and
+          kops rolling upgrades. Use maxUnavailable >= 1.
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.spec.maxUnavailable || '' }}"
+                operator: Equals
+                value: "0"
+              - key: "{{ request.object.spec.minAvailable || '' }}"
+                operator: Equals
+                value: "100%"

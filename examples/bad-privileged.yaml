@@ -1,0 +1,19 @@
+# A deliberately bad manifest used to demonstrate the validation gate rejecting it
+# (privileged container). NOT under apps/, so it never gets deployed — point the
+# validator at it: scripts/validate.sh examples
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bad
+  labels: { app: bad }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: bad } }
+  template:
+    metadata: { labels: { app: bad } }
+    spec:
+      containers:
+        - name: bad
+          image: hashicorp/http-echo:1.0
+          securityContext:
+            privileged: true

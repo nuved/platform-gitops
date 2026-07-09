@@ -1,0 +1,42 @@
+# "web" service — deployed by Argo CD from this repo into the acmecorp-web workspace.
+# No namespace here: Argo places it in the Application's destination namespace, which
+# the AppProject restricts to the tenant's own workspace.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: hashicorp/http-echo:1.0
+          args: ["-text=web service v1 — deployed by Argo CD from git", "-listen=:5678"]
+          ports:
+            - containerPort: 5678
+          # No privileged / host namespaces (Kyverno would reject). Resource
+          # requests are auto-injected by the workspace LimitRange.
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 10001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+spec:
+  selector:
+    app: web
+  ports:
+    - port: 80
+      targetPort: 5678
