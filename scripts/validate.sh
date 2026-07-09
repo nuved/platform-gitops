@@ -14,9 +14,8 @@ find "$TARGET" -name '*.yaml' -print0 | xargs -0 kubeconform -strict -summary \
   -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json'
 
 echo "--> kyverno (platform policies)"
-mapfile -t files < <(find "$TARGET" -name '*.yaml')
 res_args=()
-for f in "${files[@]}"; do res_args+=(--resource "$f"); done
+while IFS= read -r f; do res_args+=(--resource "$f"); done < <(find "$TARGET" -name '*.yaml')
 kyverno apply policies/ "${res_args[@]}"
 
 echo "== OK: all manifests pass schema + platform policies =="
