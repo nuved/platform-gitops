@@ -1,0 +1,17 @@
+# A deliberately bad manifest used to demonstrate the validation gate rejecting
+# it (runs as root, no seccomp, keeps all capabilities). NOT under apps/, so it
+# never gets deployed — point the validator at it: scripts/validate.sh examples
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bad-root
+  labels: { app: bad-root }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: bad-root } }
+  template:
+    metadata: { labels: { app: bad-root } }
+    spec:
+      containers:
+        - name: bad-root
+          image: nginx:1.27

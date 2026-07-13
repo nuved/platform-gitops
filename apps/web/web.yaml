@@ -23,12 +23,17 @@ spec:
           args: ["-text=web service v1 — deployed by Argo CD from git", "-listen=:5678"]
           ports:
             - containerPort: 5678
-          # No privileged / host namespaces (Kyverno would reject). Resource
-          # requests are auto-injected by the workspace LimitRange.
+          # PSS-restricted (tenancy-restricted Kyverno policy): non-root, no
+          # privilege escalation, no capabilities, seccomp on. Resource requests
+          # are auto-injected by the workspace LimitRange.
           securityContext:
             allowPrivilegeEscalation: false
             runAsNonRoot: true
             runAsUser: 10001
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop: [ALL]
 ---
 apiVersion: v1
 kind: Service

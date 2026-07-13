@@ -1,0 +1,23 @@
+# PSS-restricted-compliant client pod for testing workspace network isolation.
+# Deploy into a tenant namespace, then curl/wget from inside it:
+#   kubectl apply -n acmecorp-web -f examples/net-test-client.yaml
+#   kubectl exec -n acmecorp-web client -- wget -qO- -T 3 http://web.acmecorp-web.svc.cluster.local
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+  labels:
+    app: client
+spec:
+  containers:
+    - name: client
+      image: busybox:1.37
+      command: ["sleep", "infinity"]
+      securityContext:
+        allowPrivilegeEscalation: false
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
+        capabilities:
+          drop: [ALL]
