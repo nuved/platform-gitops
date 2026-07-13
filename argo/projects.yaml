@@ -20,6 +20,7 @@ spec:
     - { group: "", kind: Service }
     - { group: "", kind: ConfigMap }
     - { group: apps.nuved.io, kind: TieredApp }
+    - { group: gateway.networking.k8s.io, kind: HTTPRoute }
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
@@ -39,3 +40,4 @@ spec:
     - { group: "", kind: Service }
     - { group: "", kind: ConfigMap }
     - { group: apps.nuved.io, kind: TieredApp }
+    - { group: gateway.networking.k8s.io, kind: HTTPRoute }
