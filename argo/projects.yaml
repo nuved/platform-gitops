@@ -41,3 +41,26 @@ spec:
     - { group: "", kind: ConfigMap }
     - { group: apps.nuved.io, kind: TieredApp }
     - { group: gateway.networking.k8s.io, kind: HTTPRoute }
+---
+# The platform's own public page. Same shape as a tenant's project: locked to the
+# nuved-www namespace, this repo, and the same five kinds — no exception for being
+# ours.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: nuved-www
+  namespace: argocd
+spec:
+  description: "Tenant nuved — workspace www (the nuved.io landing page)"
+  sourceRepos:
+    - https://github.com/nuved/platform-gitops.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: nuved-www
+  clusterResourceWhitelist: []
+  namespaceResourceWhitelist:
+    - { group: apps, kind: Deployment }
+    - { group: "", kind: Service }
+    - { group: "", kind: ConfigMap }
+    - { group: apps.nuved.io, kind: TieredApp }
+    - { group: gateway.networking.k8s.io, kind: HTTPRoute }

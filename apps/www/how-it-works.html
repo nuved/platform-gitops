@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Nuved works</title>
+<meta name="description" content="What actually runs behind a Nuved environment: how a subscription provisions it, how a git push reaches it, and what the platform refuses to run.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B5563'/%3E%3Cpath d='M9 23V9l14 14V9' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='square'/%3E%3C/svg%3E">
+<style>
+:root{
+  --ground:#F1F3F2; --surface:#FFFFFF; --sunken:#E7EBEA;
+  --ink:#0F1E22; --ink-2:#4A5C60; --line:#CBD5D4; --line-strong:#9FB0B2;
+  --brand:#0B5563; --on-brand:#FFFFFF;
+  --ok:#2E6F3E; --ok-bg:#E4F0E6;
+  --deny:#A32E22; --deny-bg:#F6E5E2;
+  --focus:#0B5563;
+  --svg-box:#FFFFFF; --svg-sunken:#E7EBEA;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ground:#0C1517; --surface:#121E21; --sunken:#0A1113;
+    --ink:#E4ECEB; --ink-2:#9AAEB0; --line:#2A3B3E; --line-strong:#4C6468;
+    --brand:#5FC0D3; --on-brand:#08161A;
+    --ok:#6FD08A; --ok-bg:#16301F;
+    --deny:#F0887A; --deny-bg:#331814;
+    --focus:#5FC0D3;
+    --svg-box:#121E21; --svg-sunken:#0A1113;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:17px; line-height:1.55;
+}
+code,.mono{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace}
+a{color:var(--brand)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--focus); outline-offset:2px; border-radius:2px}
+.wrap{max-width:1080px; margin:0 auto; padding:0 24px}
+h1,h2,h3{line-height:1.14; letter-spacing:-0.02em; margin:0}
+h1{font-size:44px; font-weight:700}
+h2{font-size:27px; font-weight:700; margin-bottom:8px}
+h3{font-size:17px; font-weight:650}
+p{margin:0 0 16px}
+
+.top{border-bottom:1px solid var(--line); background:var(--surface)}
+.top .wrap{display:flex; flex-wrap:wrap; align-items:center; gap:8px 32px; padding-top:16px; padding-bottom:16px}
+.mark{font-size:21px; font-weight:700; letter-spacing:-0.03em; color:var(--ink); text-decoration:none}
+.mark span{color:var(--brand)}
+.top nav{display:flex; flex-wrap:wrap; gap:4px 28px; margin-left:auto}
+.top nav a{font-size:16px; color:var(--ink-2); text-decoration:none; padding:8px 4px; display:inline-block; min-height:24px}
+.top nav a:hover{color:var(--brand); text-decoration:underline}
+
+.lead{padding:56px 0 0}
+.back{font-size:16px; color:var(--ink-2); text-decoration:none; display:inline-block; padding:8px 0; min-height:24px}
+.back:hover{color:var(--brand); text-decoration:underline}
+.lead h1{margin:8px 0 16px; max-width:20ch}
+.lead p{font-size:21px; color:var(--ink-2); max-width:60ch}
+
+section.band{padding:64px 0 8px}
+.kicker{font-size:16px; color:var(--ink-2); max-width:66ch; margin:0 0 28px}
+
+.rail{list-style:none; margin:0; padding:0; border-left:2px solid var(--line-strong); max-width:72ch}
+.rail li{position:relative; padding:0 0 28px 28px}
+.rail li:last-child{padding-bottom:8px}
+.rail li::before{content:""; position:absolute; left:-7px; top:7px; width:12px; height:12px; background:var(--brand); border-radius:50%}
+.step-n{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:14px; color:var(--ink-2); margin-right:8px}
+.rail p{margin:4px 0 0; font-size:16px; color:var(--ink-2); max-width:62ch}
+.rail .by{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:14px; color:var(--brand)}
+
+.enforced{list-style:none; margin:0; padding:0; border-top:1px solid var(--line)}
+.enforced li{display:flex; flex-wrap:wrap; gap:4px 16px; align-items:baseline; justify-content:space-between;
+  padding:12px 0; border-bottom:1px solid var(--line); font-size:16px}
+.enforced li>span:first-child{flex:1 1 22ch; min-width:0}
+.where{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:14px;
+  color:var(--ink-2); background:var(--sunken); border:1px solid var(--line);
+  padding:4px 8px; border-radius:3px; white-space:nowrap; flex:none}
+.where-deny{color:var(--deny); background:var(--deny-bg); border-color:var(--deny)}
+
+figure{margin:0}
+.diagram{background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:20px; overflow:hidden}
+.diagram svg{display:block; width:100%; height:auto; max-width:760px; margin:0 auto}
+.diagram svg.tall{display:none; max-width:360px}
+figcaption{font-size:15px; color:var(--ink-2); margin-top:12px; max-width:66ch}
+.svg-box{fill:var(--svg-box); stroke:var(--line-strong); stroke-width:1.5}
+.svg-ns{fill:var(--svg-sunken); stroke:var(--brand); stroke-width:2; stroke-dasharray:6 4}
+.svg-t{fill:var(--ink); font-size:17px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.svg-s{fill:var(--ink-2); font-size:15px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.svg-l{stroke:var(--line-strong); stroke-width:2; fill:none}
+.svg-a{fill:var(--line-strong)}
+
+.sandbox{background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--brand);
+  border-radius:6px; padding:24px 20px; max-width:72ch}
+.card-no{display:inline-block; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:17px; background:var(--sunken); border:1px solid var(--line);
+  padding:8px 12px; border-radius:4px; margin:4px 0 16px}
+.warn{font-size:15px; color:var(--deny); background:var(--deny-bg); border:1px solid var(--deny);
+  border-radius:4px; padding:12px 16px; margin:0}
+.btn{display:inline-flex; align-items:center; justify-content:center; text-align:center;
+  min-height:52px; padding:12px 32px; border-radius:6px; font-size:17px; font-weight:600;
+  text-decoration:none; border:2px solid var(--brand); background:var(--brand); color:var(--on-brand)}
+.btn:hover{background:var(--ink); border-color:var(--ink); color:var(--ground)}
+.cta{display:flex; flex-wrap:wrap; gap:16px; margin-top:32px}
+
+footer{margin-top:64px; border-top:1px solid var(--line); background:var(--surface); padding:40px 0 56px}
+footer ul{list-style:none; margin:0 0 16px; padding:0; display:flex; flex-wrap:wrap; gap:8px 32px}
+footer ul a{font-size:16px; padding:8px 0; display:inline-block; min-height:24px}
+footer p{font-size:15px; color:var(--ink-2); margin:0; max-width:60ch}
+
+@media (max-width:820px){
+  body{font-size:16px}
+  h1{font-size:33px}
+  h2{font-size:24px}
+  .wrap{padding:0 16px}
+  .lead{padding-top:40px}
+  .lead p{font-size:19px}
+  section.band{padding:48px 0 8px}
+  .diagram svg.wide{display:none}
+  .diagram svg.tall{display:block}
+  .diagram{padding:16px}
+  .sandbox{padding:20px 16px}
+  .btn{width:100%; padding:12px 16px}
+  footer{margin-top:48px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important; animation:none !important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="/">nuved<span>.</span></a>
+    <nav aria-label="Sections">
+      <a href="/#pricing">Pricing</a>
+      <a href="/how-it-works.html" aria-current="page">How it works</a>
+      <a href="/#faq">Questions</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <div class="wrap">
+    <div class="lead">
+      <a class="back" href="/">Back to the homepage</a>
+      <h1>How it works</h1>
+      <p>The homepage says what you get. This page says what actually runs, because the
+        part worth judging is what the platform refuses to do.</p>
+    </div>
+  </div>
+
+  <section class="band" id="steps">
+    <div class="wrap">
+      <h2>Four steps</h2>
+      <p class="kicker">A different piece of the platform owns each one.</p>
+      <ol class="rail">
+        <li>
+          <h3><span class="step-n">1</span>Subscribe on a plan</h3>
+          <p>Stripe Checkout takes the subscription. The signed webhook writes it to Postgres,
+            which is the source of truth, then creates a <span class="by">Tenant</span> in the
+            cluster carrying that plan's quota. Cancelling reverses it.</p>
+        </li>
+        <li>
+          <h3><span class="step-n">2</span>Get isolated workspaces</h3>
+          <p>The <span class="by">tenancy-operator</span> turns each workspace into a namespace
+            with a ResourceQuota, a LimitRange, a default-deny NetworkPolicy and a RoleBinding.
+            Your plan decides how many you can have; asking for one more is refused.</p>
+        </li>
+        <li>
+          <h3><span class="step-n">3</span>Push your manifests</h3>
+          <p>Commit a directory under <span class="by">apps/</span> and open a pull request.
+            CI runs kubeconform and the cluster's own Kyverno policies against it, so a
+            privileged pod fails the PR with the message admission would have given.</p>
+        </li>
+        <li>
+          <h3><span class="step-n">4</span>Watch it go Healthy</h3>
+          <p>Argo CD syncs your directory into your namespace and reverts anything that drifts
+            away from git. The console lists your workspaces and the live status of what runs
+            in each one.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="band" id="architecture">
+    <div class="wrap">
+      <h2>What runs where</h2>
+      <p class="kicker">Two paths reach the same namespace: a subscription creates it, git
+        fills it. Traffic gets in through one shared Gateway and nothing else.</p>
+      <figure>
+        <div class="diagram">
+          <svg class="wide" viewBox="0 0 760 380" role="img" aria-labelledby="dwt">
+            <title id="dwt">Stripe Checkout feeds plans-backend, which creates a Tenant custom resource; the tenancy-operator provisions the workspace namespace. In parallel, a git push is synced by Argo CD into that namespace, and visitor traffic reaches it through the platform Gateway.</title>
+            <defs>
+              <marker id="ahw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" class="svg-a"/>
+              </marker>
+            </defs>
+            <rect class="svg-box" x="8" y="26" width="150" height="44" rx="4"/>
+            <text class="svg-t" x="83" y="54" text-anchor="middle">Stripe Checkout</text>
+            <rect class="svg-box" x="196" y="26" width="150" height="44" rx="4"/>
+            <text class="svg-t" x="271" y="54" text-anchor="middle">plans-backend</text>
+            <rect class="svg-box" x="372" y="26" width="146" height="44" rx="4"/>
+            <text class="svg-t" x="445" y="54" text-anchor="middle">Tenant CR</text>
+            <rect class="svg-box" x="372" y="116" width="146" height="44" rx="4"/>
+            <text class="svg-t" x="445" y="144" text-anchor="middle">tenancy-operator</text>
+            <rect class="svg-box" x="8" y="190" width="150" height="44" rx="4"/>
+            <text class="svg-t" x="83" y="218" text-anchor="middle">git push</text>
+            <rect class="svg-box" x="196" y="190" width="150" height="44" rx="4"/>
+            <text class="svg-t" x="271" y="218" text-anchor="middle">Argo CD</text>
+            <rect class="svg-box" x="8" y="298" width="150" height="44" rx="4"/>
+            <text class="svg-t" x="83" y="326" text-anchor="middle">Visitor</text>
+            <rect class="svg-box" x="196" y="294" width="150" height="52" rx="4"/>
+            <text class="svg-t" x="271" y="316" text-anchor="middle">Gateway</text>
+            <text class="svg-s" x="271" y="336" text-anchor="middle" font-size="13">platform-ingress</text>
+            <line class="svg-l" x1="158" y1="48" x2="190" y2="48" marker-end="url(#ahw)"/>
+            <line class="svg-l" x1="346" y1="48" x2="366" y2="48" marker-end="url(#ahw)"/>
+            <line class="svg-l" x1="445" y1="70" x2="445" y2="110" marker-end="url(#ahw)"/>
+            <line class="svg-l" x1="518" y1="138" x2="590" y2="138" marker-end="url(#ahw)"/>
+            <text class="svg-s" x="557" y="128" text-anchor="middle" font-size="13">creates</text>
+            <line class="svg-l" x1="158" y1="212" x2="190" y2="212" marker-end="url(#ahw)"/>
+            <line class="svg-l" x1="346" y1="212" x2="590" y2="212" marker-end="url(#ahw)"/>
+            <text class="svg-s" x="468" y="202" text-anchor="middle" font-size="13">syncs</text>
+            <line class="svg-l" x1="346" y1="320" x2="590" y2="320" marker-end="url(#ahw)"/>
+            <text class="svg-s" x="468" y="310" text-anchor="middle" font-size="13">routes</text>
+            <rect class="svg-ns" x="596" y="96" width="156" height="264" rx="4"/>
+            <text class="svg-s" x="608" y="122">namespace</text>
+            <text class="svg-t" x="608" y="146" font-weight="650">acmecorp-web</text>
+            <line class="svg-l" x1="608" y1="158" x2="740" y2="158" stroke-width="1"/>
+            <text class="svg-s" x="608" y="180" font-size="13">ResourceQuota</text>
+            <text class="svg-s" x="608" y="200" font-size="13">LimitRange</text>
+            <text class="svg-s" x="608" y="220" font-size="13">NetworkPolicy</text>
+            <text class="svg-s" x="608" y="240" font-size="13">RoleBinding</text>
+            <text class="svg-s" x="608" y="260" font-size="13">Kyverno rules</text>
+            <rect class="svg-box" x="608" y="276" width="132" height="60" rx="4"/>
+            <text class="svg-t" x="674" y="300" text-anchor="middle" font-size="14">your workloads</text>
+            <text class="svg-s" x="674" y="322" text-anchor="middle" font-size="13">web, api</text>
+          </svg>
+          <svg class="tall" viewBox="0 0 360 700" role="img" aria-labelledby="dtt">
+            <title id="dtt">Stripe Checkout feeds plans-backend, which creates a Tenant custom resource; the tenancy-operator provisions the workspace namespace with its quota, LimitRange, NetworkPolicy, RoleBinding and Kyverno rules. Argo CD syncs your git push into that namespace, and the platform Gateway routes visitor traffic to it.</title>
+            <defs>
+              <marker id="aht" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" class="svg-a"/>
+              </marker>
+            </defs>
+            <rect class="svg-box" x="70" y="8" width="220" height="44" rx="4"/>
+            <text class="svg-t" x="180" y="36" text-anchor="middle">Stripe Checkout</text>
+            <line class="svg-l" x1="180" y1="52" x2="180" y2="70" marker-end="url(#aht)"/>
+            <rect class="svg-box" x="70" y="76" width="220" height="44" rx="4"/>
+            <text class="svg-t" x="180" y="104" text-anchor="middle">plans-backend</text>
+            <line class="svg-l" x1="180" y1="120" x2="180" y2="138" marker-end="url(#aht)"/>
+            <rect class="svg-box" x="70" y="144" width="220" height="44" rx="4"/>
+            <text class="svg-t" x="180" y="172" text-anchor="middle">Tenant CR</text>
+            <line class="svg-l" x1="180" y1="188" x2="180" y2="206" marker-end="url(#aht)"/>
+            <rect class="svg-box" x="70" y="212" width="220" height="44" rx="4"/>
+            <text class="svg-t" x="180" y="240" text-anchor="middle">tenancy-operator</text>
+            <line class="svg-l" x1="180" y1="256" x2="180" y2="280" marker-end="url(#aht)"/>
+            <text class="svg-s" x="188" y="274" font-size="13">provisions</text>
+            <rect class="svg-ns" x="16" y="286" width="328" height="280" rx="4"/>
+            <text class="svg-s" x="32" y="312">namespace</text>
+            <text class="svg-t" x="32" y="336" font-weight="650">acmecorp-web</text>
+            <line class="svg-l" x1="32" y1="348" x2="328" y2="348" stroke-width="1"/>
+            <text class="svg-s" x="32" y="372">ResourceQuota</text>
+            <text class="svg-s" x="32" y="394">LimitRange</text>
+            <text class="svg-s" x="32" y="416">NetworkPolicy</text>
+            <text class="svg-s" x="32" y="438">RoleBinding</text>
+            <text class="svg-s" x="32" y="460">Kyverno rules</text>
+            <rect class="svg-box" x="32" y="478" width="296" height="68" rx="4"/>
+            <text class="svg-t" x="180" y="506" text-anchor="middle">your workloads</text>
+            <text class="svg-s" x="180" y="530" text-anchor="middle">web, api</text>
+            <line class="svg-l" x1="96" y1="610" x2="96" y2="572" marker-end="url(#aht)"/>
+            <text class="svg-s" x="102" y="596" font-size="13">syncs</text>
+            <line class="svg-l" x1="264" y1="610" x2="264" y2="572" marker-end="url(#aht)"/>
+            <text class="svg-s" x="270" y="596" font-size="13">routes</text>
+            <rect class="svg-box" x="16" y="610" width="160" height="60" rx="4"/>
+            <text class="svg-t" x="96" y="634" text-anchor="middle">Argo CD</text>
+            <text class="svg-s" x="96" y="656" text-anchor="middle" font-size="13">from git push</text>
+            <rect class="svg-box" x="184" y="610" width="160" height="60" rx="4"/>
+            <text class="svg-t" x="264" y="634" text-anchor="middle">Gateway</text>
+            <text class="svg-s" x="264" y="656" text-anchor="middle" font-size="13">from visitors</text>
+          </svg>
+        </div>
+        <figcaption>A paid subscription is what creates the namespace, and deleting the
+          subscription deletes it again. Argo CD is the only thing that writes workloads into
+          it. The Gateway is the only way in from outside: the NetworkPolicy drops everything
+          else.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band" id="enforced">
+    <div class="wrap">
+      <h2>What the platform enforces</h2>
+      <p class="kicker">Every line here is a rule the cluster applies on its own, not advice
+        in a runbook. The tag says which component refuses you when you break it.</p>
+      <ul class="enforced">
+        <li><span>One namespace per workspace, labelled with its tenant and plan</span><span class="where">tenancy-operator</span></li>
+        <li><span>A ResourceQuota per workspace, and a LimitRange so a container that declares no requests still gets 100m CPU and 128Mi</span><span class="where">tenancy-operator</span></li>
+        <li><span>A default-deny NetworkPolicy: pods talk to their own namespace and to DNS, nothing else</span><span class="where">tenancy-operator</span></li>
+        <li><span>A RoleBinding to the built-in <code>edit</code> role, scoped to the one namespace</span><span class="where">tenancy-operator</span></li>
+        <li><span>The operator will not adopt a namespace it did not create, so deleting a workspace can never take someone else's with it</span><span class="where">tenancy-operator</span></li>
+        <li><span>No privileged containers, no host network, host PID or host IPC</span><span class="where where-deny">Kyverno admission</span></li>
+        <li><span>Non-root only, no privilege escalation, all capabilities dropped, seccomp on, no hostPath, no hostPort</span><span class="where where-deny">Kyverno admission</span></li>
+        <li><span>No PodDisruptionBudget that blocks every eviction and would stall a node drain</span><span class="where where-deny">Kyverno admission</span></li>
+        <li><span>An Argo AppProject per workspace, locked to that namespace, this repo, and five resource kinds</span><span class="where">Argo CD</span></li>
+        <li><span>kubeconform plus those same Kyverno policies on every pull request, so the answer arrives before the merge</span><span class="where">CI gate</span></li>
+        <li><span>A Stripe subscription is what creates a tenant; cancelling it deletes the namespaces and everything in them</span><span class="where">plans-backend</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" id="sandbox">
+    <div class="wrap">
+      <h2>Try the sandbox</h2>
+      <div class="sandbox">
+        <p>Open the console, pick a plan, and pay with Stripe's test card:</p>
+        <p class="card-no">4242 4242 4242 4242, any future expiry, any CVC</p>
+        <p>The webhook creates a tenant, the operator provisions the namespace, and the
+          console shows the workspace with its quota. Deploy something into it, then cancel
+          the subscription from the billing portal and watch the namespace go away.</p>
+        <p class="warn">Anything you create here is public. Other visitors can see it, and it
+          is wiped whenever the cluster is rebuilt. Do not put anything private in it.</p>
+      </div>
+      <div class="cta">
+        <a class="btn" href="https://console.nuved.io/console?org=acmecorp">Open the console</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <ul>
+      <li><a href="/">Homepage</a></li>
+      <li><a href="https://github.com/nuved/platform-gitops">Source on GitHub</a></li>
+    </ul>
+    <p>Sandbox demo, built and operated by one engineer. No high availability: the whole
+      demo lives on one small cluster, and when that restarts the demo goes down with it.
+      Stripe runs in test mode, so no card is charged.</p>
+    <p style="margin-top:12px">This page is served from the platform itself, deployed from
+      <code>apps/www</code> by Argo CD.</p>
+  </div>
+</footer>
+
+</body>
+</html>
