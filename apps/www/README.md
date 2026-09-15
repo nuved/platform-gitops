@@ -6,18 +6,25 @@ admission, the same validation gate in CI, and the same shared Gateway as
 `apps/api`.
 
 ```
-index.html, how-it-works.html  ──render.sh──►  configmap.yaml  ──Argo CD──►  nuved-www
-                                                                              nginx-unprivileged
+*.html, *.woff2  ──render.sh──►  configmap.yaml  ──Argo CD──►  nuved-www
+                                                                 nginx-unprivileged
 ```
 
 | page | serves | what it says |
 |---|---|---|
-| `index.html` | `/` | the product page: what you get, what it costs, four questions a buyer asks |
-| `how-it-works.html` | `/how-it-works.html` | the mechanism: the four steps, the architecture diagram, what the platform refuses to run, and the sandbox instructions |
+| `index.html` | `/` | the product page: what an agent can and cannot do, what it costs, the questions a buyer asks |
+| `how-it-works.html` | `/how-it-works.html` | the mechanism: the four steps, the four request paths, what the platform refuses to run, and what is honestly not built |
 
 The split is deliberate. The homepage names no components and shows no YAML,
 because someone deciding whether to use this does not care yet. Everything
 technical lives one click away.
+
+Both pages may only claim what runs. That rule comes from
+`docs/superpowers/specs/2026-09-15-agent-safe-platform-design.md` in
+platform-cluster, and it is why the page talks about `kubectl` with a scoped
+kubeconfig rather than the `nuved deploy` command in the design mock: the mock
+describes where this is going, the page describes tonight. Anything unbuilt is
+either absent or carries a visible mark.
 
 ## Files
 
@@ -25,13 +32,15 @@ technical lives one click away.
 |---|---|
 | `index.html` | homepage. **Source of truth.** |
 | `how-it-works.html` | the technical page. **Source of truth.** |
-| `render.sh` | regenerates `configmap.yaml` from both pages. |
+| `render.sh` | regenerates `configmap.yaml` from the pages and the fonts. |
 | `configmap.yaml` | **generated — never hand-edit.** |
 | `www.yaml` | Deployment, Service, HTTPRoute. |
+| `schibsted-grotesk.woff2` | display and body face, variable 400–700, latin subset. |
+| `ibm-plex-mono-400.woff2`, `ibm-plex-mono-500.woff2` | the terminal and the numbers. |
 
-Both pages are self-contained: inline CSS, no JavaScript, system fonts, a
-data-URI favicon, and for the homepage a data-URI screenshot. Neither page makes
-a single subresource request, so there is nothing to break and nothing to cache.
+Both pages carry their own inline CSS and no JavaScript, and the favicon is a
+data URI. The only subresource requests either page makes are the three fonts,
+and those are served from this origin — opening the page contacts nobody but us.
 
 ## Changing a page
 
@@ -49,31 +58,39 @@ ConfigMap as that directory — so a new page is served by adding it to `PAGES` 
 refreshed by the kubelet within about a minute, and nginx reads the file per
 request, so a change reaches visitors without a pod restart.
 
-Current sizes, against a 1 MiB cap on the whole ConfigMap object:
+Current sizes, against a 1 MiB cap on the whole ConfigMap object. `render.sh`
+prints these on every run and refuses to write a ConfigMap over the cap:
 
 | | bytes |
 |---|--:|
-| `index.html` | 41,189 |
-| `how-it-works.html` | 21,339 |
-| `configmap.yaml` | 65,583 |
+| `index.html` | 26,025 |
+| `how-it-works.html` | 19,042 |
+| the three fonts | 66,976 |
+| `configmap.yaml` | 138,176 |
 
-## The console screenshot
+## The fonts
 
-The image under the homepage hero is a **real screenshot of the live console** at
-`https://console.nuved.io/console?org=acmecorp`, taken 2026-09-15 at 1280 wide and
-clipped just below the trailing note. Nothing in it is staged: it shows the
-`acmecorp` tenant on the standard plan with all three of its environments in use,
-one of them empty, and the create-workspace control refused because the plan limit
-is reached.
+Schibsted Grotesk (Ellmer Type) and IBM Plex Mono (IBM), both SIL Open Font
+License 1.1, which permits redistribution. They are checked in as latin-subset
+`.woff2` files taken from the Google Fonts CDN and **served from this origin**.
 
-To refresh it: screenshot that URL at 1280 wide, clip to the bottom of `.note`,
-encode with `cwebp -lossless` (it beats lossy on this flat UI — 31,602 bytes
-against 40,348 at q90), and inline it as a data URI. Keep the homepage under 60 KB,
-or move the image to a second ConfigMap key using `binaryData`.
+That is a deliberate choice, not an oversight: linking `fonts.googleapis.com`
+would send every visitor's IP address to Google before they have agreed to
+anything, which is the exact arrangement a German court has already treated as a
+GDPR violation (LG München I, 20 January 2022, 3 O 17493/20). Self-hosting costs
+67 KB and settles the question.
 
-Read what the console actually shows before embedding it. Anyone can create a
-workspace in the public sandbox, and whatever they name it would land on the
-homepage.
+Schibsted Grotesk is a variable font, so one file covers weights 400 through 700.
+The fonts live in the ConfigMap's `binaryData`, base64 on one line each, because
+Kubernetes decodes `binaryData` with StdEncoding and a wrapped block scalar's
+newlines would not decode.
+
+The console panel beside the terminal on the homepage is **built in HTML, not a
+screenshot.** It mirrors the live console at `https://console.nuved.io/console`
+element for element — balance, hourly rate, days left, caps, reservation, service
+status, tokens — so it cannot drift into claiming a control that does not exist,
+and so it stays readable at 400 px. Compare it against the real console before
+changing either one.
 
 ## Merge this before the first bootstrap run
 

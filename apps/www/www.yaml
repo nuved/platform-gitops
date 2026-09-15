@@ -43,11 +43,13 @@ spec:
             readOnlyRootFilesystem: true
             capabilities:
               drop: [ALL]
-          # Comfortably inside the workspace LimitRange defaults
-          # (requests 100m/128Mi, limits 500m/256Mi) — a one-file static site.
+          # The node this demo runs on has only a few hundred millicores free, so
+          # this asks for the least a static site can run on rather than taking the
+          # workspace LimitRange default (50m/64Mi). Two nginx workers on an idle
+          # page sit around 20 MiB resident; the limit leaves room for a crowd.
           resources:
             requests:
-              cpu: 50m
+              cpu: 20m
               memory: 32Mi
             limits:
               cpu: 200m
