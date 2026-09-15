@@ -122,6 +122,8 @@ data:
     .view-label{font-size:14px; font-weight:500; letter-spacing:.01em; padding:10px 18px; border-bottom:1px solid var(--line)}
     .term{background:var(--term-bg); color:var(--term-ink)}
     .term .view-label{color:var(--term-dim); border-bottom-color:#1F3236}
+    .term-note{margin:0; padding:10px 18px; font-size:13px; line-height:1.45; color:#AEC4C6; border-bottom:1px solid #1F3236}
+    .term-note .mono{color:var(--term-ink)}
     .term pre{margin:0; padding:18px 18px 22px; font-size:13.5px; line-height:1.6; white-space:pre-wrap; overflow-wrap:anywhere}
     .term .p{color:var(--term-prompt)}
     .term .ok{color:var(--term-ok)}
@@ -236,7 +238,10 @@ data:
       .con .acts .btn{width:auto; flex:1}
       .two{margin-top:40px}
       section{padding-top:64px}
-      .term pre{font-size:12.5px; padding:16px 14px 20px}
+      /* 45 characters is the widest line in the panel; at 12px IBM Plex Mono that is
+         324px inside a 342px box, so nothing wraps on a 400px phone. */
+      .term pre{font-size:12px; padding:16px 12px 20px}
+      .term-note{padding:10px 12px}
       footer{margin-top:64px}
       footer p{margin-left:0}
     }
@@ -282,30 +287,42 @@ data:
           <div class="views">
             <div class="term">
               <div class="view-label">Your terminal, then your agent's</div>
-    <pre class="mono"><span class="p">$</span> nuved project create shop --cpu 0.5 --mem 1Gi --services 3
+              <p class="term-note">Example. Organization <span class="mono">acme</span>, project <span class="mono">shop</span> — yours will carry your own names.</p>
+    <pre class="mono"><span class="p">$</span> nuved project create shop \
+        --cpu 0.5 --mem 1Gi --services 3
     Created project shop (0.5 vCPU  1 GiB  3 svc)
-    <span class="p">$</span> nuved token create shop --for claude-code
-    <span class="dim">This is the only time the token is shown.</span>
-    <span class="p">$</span> nuved kubeconfig shop -o ~/.kube/shop-agent
+    <span class="dim"># a project is an isolated namespace with
+    # its own caps. --cpu and --mem are what all
+    # its services may reserve together;
+    # --services is how many it may run.</span>
+    <span class="gap"></span><span class="p">$</span> nuved token create shop --for claude-code
+    <span class="ok">nvd_agent_…</span>
+    This is the only time the token is shown.
+    Store it now; revoke it with:
+    nuved token revoke 3
+    <span class="gap"></span><span class="p">$</span> nuved kubeconfig shop -o ~/.kube/shop-agent
     <span class="ok">Wrote ~/.kube/shop-agent</span>
-    <span class="gap"></span><span class="dim"># from here on the agent, holding that file and nothing else</span>
+    <span class="dim"># for the agent: points at kube.nuved.io,
+    # carries only that token.</span>
+    <span class="gap"></span><span class="dim"># the agent from here, holding that file</span>
     <span class="p">$</span> kubectl apply -f k8s/api.yaml
     deployment.apps/api created
     service/api created
     <span class="gap"></span><span class="p">$</span> kubectl get ns
     NAME        STATUS
     acme-shop   Active
+    <span class="dim"># its own project, and nothing else</span>
     <span class="gap"></span><span class="p">$</span> kubectl -n acme-billing get pods
-    <span class="no">Error from server (Forbidden):</span> this token was made
-    for the project acme-shop
-    <span class="gap"></span><span class="p">$</span> kubectl apply -f k8s/big.yaml <span class="dim"># asks for 2 vCPU</span>
+    <span class="no">Error from server (Forbidden): this token
+    was made for the project acme-shop</span>
+    <span class="gap"></span><span class="p">$</span> kubectl apply -f k8s/big.yaml <span class="dim"># 2 vCPU</span>
     deployment.apps/big created
     <span class="p">$</span> kubectl get deploy big
     NAME   READY   UP-TO-DATE   AVAILABLE
     <span class="no">big    0/1     0            0</span>
-    <span class="dim"># not one pod of it runs. The quota refused every one:
-    # exceeded quota: workspace-quota, requested:
-    # requests.cpu=2, limited: requests.cpu=500m</span></pre>
+    <span class="dim"># no pod of it runs: exceeded quota:
+    # workspace-quota, requested: requests.cpu=2,
+    # limited: requests.cpu=500m</span></pre>
             </div>
             <div class="con">
               <div class="view-label">Your console</div>
