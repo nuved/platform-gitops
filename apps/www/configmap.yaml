@@ -349,7 +349,7 @@ data:
             <ul>
               <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Deploy with the kubectl it already knows<small>You hand it a kubeconfig for one project. There is no agent-only tool to learn.</small></span></li>
               <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Read logs, restart and scale, inside the caps</span></li>
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Put a service on a public address<small>Every service gets one at <span class="mono">&lt;service&gt;-&lt;project&gt;.nuved.io</span>. During the preview we open the route for you.</small></span></li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Give a service a public address<small>Expose on the console row, or one API call, and the platform makes the route in seconds. Your first project answers at <span class="mono">&lt;service&gt;-&lt;org&gt;.nuved.io</span>, any other at <span class="mono">&lt;service&gt;-&lt;org&gt;-&lt;project&gt;.nuved.io</span>.</small></span></li>
               <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Delete and redeploy what it made, in its own project</span></li>
             </ul>
           </div>
@@ -714,7 +714,7 @@ data:
                 <li><span class="node">Gateway</span><span class="hop">&rarr;</span></li>
                 <li><span class="node wall">your Service</span></li>
               </ul>
-              <figcaption>One shared Gateway, no cloud load balancer. Cloudflare proxies <code>*.nuved.io</code> to the node's fixed address, and the Gateway routes by hostname, which is how a service ends up at <code>&lt;service&gt;-&lt;project&gt;.nuved.io</code>. A hostname nobody claimed gets a 404 from the Gateway. The default-deny NetworkPolicy drops every other way in.</figcaption>
+              <figcaption>One shared Gateway, no cloud load balancer. Cloudflare proxies <code>*.nuved.io</code> to the node's fixed address, and the Gateway routes by hostname. Expose on a console service row, or <code>POST /v1/projects/{name}/services/{service}/expose</code>, and the platform writes that HTTPRoute for you: <code>&lt;service&gt;-&lt;org&gt;.nuved.io</code> for your first project, <code>&lt;service&gt;-&lt;org&gt;-&lt;project&gt;.nuved.io</code> for the rest. A hostname nobody claimed gets a 404 from the Gateway. The default-deny NetworkPolicy drops every other way in.</figcaption>
             </figure>
           </div>
           <p class="kicker" style="margin-top:8px">This page is one of those Services. It is deployed from <code>apps/www</code> in the public manifests repo by Argo CD, into a namespace with the same quota, the same policies and the same Gateway as a customer's — no exception for being ours.</p>

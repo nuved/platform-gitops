@@ -237,7 +237,7 @@ footer p{font-size:15px; color:var(--ink-2); margin:0; max-width:64ch}
             <li><span class="node">Gateway</span><span class="hop">&rarr;</span></li>
             <li><span class="node wall">your Service</span></li>
           </ul>
-          <figcaption>One shared Gateway, no cloud load balancer. Cloudflare proxies <code>*.nuved.io</code> to the node's fixed address, and the Gateway routes by hostname, which is how a service ends up at <code>&lt;service&gt;-&lt;project&gt;.nuved.io</code>. A hostname nobody claimed gets a 404 from the Gateway. The default-deny NetworkPolicy drops every other way in.</figcaption>
+          <figcaption>One shared Gateway, no cloud load balancer. Cloudflare proxies <code>*.nuved.io</code> to the node's fixed address, and the Gateway routes by hostname. Expose on a console service row, or <code>POST /v1/projects/{name}/services/{service}/expose</code>, and the platform writes that HTTPRoute for you: <code>&lt;service&gt;-&lt;org&gt;.nuved.io</code> for your first project, <code>&lt;service&gt;-&lt;org&gt;-&lt;project&gt;.nuved.io</code> for the rest. A hostname nobody claimed gets a 404 from the Gateway. The default-deny NetworkPolicy drops every other way in.</figcaption>
         </figure>
       </div>
       <p class="kicker" style="margin-top:8px">This page is one of those Services. It is deployed from <code>apps/www</code> in the public manifests repo by Argo CD, into a namespace with the same quota, the same policies and the same Gateway as a customer's — no exception for being ours.</p>
