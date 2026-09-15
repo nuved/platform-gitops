@@ -267,8 +267,9 @@ footer p{font-size:15px; color:var(--ink-2); margin-left:auto; padding:12px 0}
         <div class="term">
           <div class="view-label">Your terminal, then your agent's</div>
 <pre class="mono"><span class="p">$</span> nuved project create shop --cpu 0.5 --mem 1Gi --services 3
-Created project shop (0.5 vCPU · 1 GiB · 3 services)
+Created project shop (0.5 vCPU  1 GiB  3 svc)
 <span class="p">$</span> nuved token create shop --for claude-code
+<span class="dim">This is the only time the token is shown.</span>
 <span class="p">$</span> nuved kubeconfig shop -o ~/.kube/shop-agent
 <span class="ok">Wrote ~/.kube/shop-agent</span>
 <span class="gap"></span><span class="dim"># from here on the agent, holding that file and nothing else</span>
@@ -283,10 +284,12 @@ acme-shop   Active
 for the project acme-shop
 <span class="gap"></span><span class="p">$</span> kubectl apply -f k8s/big.yaml <span class="dim"># asks for 2 vCPU</span>
 deployment.apps/big created
-<span class="p">$</span> kubectl describe deploy big | grep forbidden
-<span class="no">pods "big-7c9f4" is forbidden: exceeded quota:</span>
-<span class="no">workspace-quota, requested: requests.cpu=2,</span>
-<span class="no">limited: requests.cpu=500m</span></pre>
+<span class="p">$</span> kubectl get deploy big
+NAME   READY   UP-TO-DATE   AVAILABLE
+<span class="no">big    0/1     0            0</span>
+<span class="dim"># not one pod of it runs. The quota refused every one:
+# exceeded quota: workspace-quota, requested:
+# requests.cpu=2, limited: requests.cpu=500m</span></pre>
         </div>
         <div class="con">
           <div class="view-label">Your console</div>
@@ -420,7 +423,7 @@ explicit requests — anything larger the server refuses.</pre>
       </div>
       <div>
         <h3>Do I need your CLI?</h3>
-        <p>Only you do. <code>nuved</code> signs you in and manages projects, tokens and your balance; your agent needs nothing but kubectl. CLI downloads are coming this week — until then the console does all of it in the browser.</p>
+        <p>Only you do. <code>nuved</code> signs you in and manages projects, tokens and your balance; your agent needs nothing but kubectl. Install it with <code>curl -fsSL https://get.nuved.io/install.sh | sh</code>, or do the same things in the console.</p>
       </div>
       <div>
         <h3>Where does my code live?</h3>
@@ -446,6 +449,7 @@ explicit requests — anything larger the server refuses.</pre>
   <div class="wrap">
     <a href="how-it-works.html">How it works</a>
     <a href="https://api.nuved.io/docs">API docs</a>
+    <a href="https://get.nuved.io/">Install the CLI</a>
     <a href="https://github.com/nuved/platform-gitops">Source on GitHub</a>
     <a href="mailto:hello@nuved.io?subject=Invitation%20to%20the%20Nuved%20preview">Request an invitation</a>
     <p>Preview, built and operated by one engineer.</p>
