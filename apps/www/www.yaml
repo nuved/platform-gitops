@@ -58,6 +58,14 @@ spec:
             - name: html
               mountPath: /usr/share/nginx/html
               readOnly: true
+            - name: brand
+              # Beside the html mount, not inside it; nginx maps /brand/ here.
+              mountPath: /usr/share/nginx/brand
+              readOnly: true
+            - name: nginx-conf
+              # Replaces the image's default.conf entirely.
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
             - name: tmp
               # nginx.conf puts the pid file and all *_temp_path dirs here, so this
               # is the only writable path a read-only root filesystem needs.
@@ -78,6 +86,12 @@ spec:
         - name: html
           configMap:
             name: www-html
+        - name: brand
+          configMap:
+            name: www-brand
+        - name: nginx-conf
+          configMap:
+            name: www-nginx
         - name: tmp
           emptyDir: {}
 ---

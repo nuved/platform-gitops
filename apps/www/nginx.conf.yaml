@@ -1,0 +1,37 @@
+# The one piece of nginx configuration this site owns. Mounting it at
+# /etc/nginx/conf.d REPLACES the image's default.conf, so this file is the whole
+# server block — there is no other one to fall back to.
+#
+# It exists for /brand/. Those files are fetched by things that are not a browser
+# on nuved.io: Authentik renders the wordmark from its own origin, and Gmail
+# serves mail images through an image proxy. Both need
+# Access-Control-Allow-Origin, and both re-fetch often enough to want a cache
+# header. The pages themselves keep nginx's defaults.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: www-nginx
+  labels:
+    app: www
+data:
+  default.conf: |
+    server {
+        listen       8080;
+        server_name  _;
+
+        root  /usr/share/nginx/html;
+        index index.html;
+
+        location / {
+        }
+
+        # A separate ConfigMap, mounted beside the html one rather than inside
+        # it: a ConfigMap volume rewrites its whole directory when it updates,
+        # and a second mount nested in that directory is a thing to trip over.
+        # `alias` costs one line and keeps the two volumes independent.
+        location /brand/ {
+            alias /usr/share/nginx/brand/;
+            add_header Cache-Control "public, max-age=86400" always;
+            add_header Access-Control-Allow-Origin "*" always;
+        }
+    }
