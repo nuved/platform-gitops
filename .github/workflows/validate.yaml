@@ -8,17 +8,38 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    env:
+      # Pinned on purpose. A gate whose checker floats is a gate that can change
+      # its mind with no commit behind the change — a kyverno release could start
+      # passing something this repo means to refuse, and nobody would see a diff.
+      # These are the versions the manifests are checked against locally.
+      # To bump: change the number, run ./scripts/validate.sh apps with the same
+      # version locally, and commit both together.
+      KUBECONFORM_VERSION: "0.8.0"
+      KYVERNO_VERSION: "1.18.1"
     steps:
       - uses: actions/checkout@v4
+
+      # kubeconform leaves the version out of its asset name; kyverno puts it in.
+      # This workflow used `releases/latest/download/kyverno-cli_linux_x86_64.tar.gz`
+      # for both, which does not exist, so GitHub answered "Not Found", curl without
+      # -f saved those nine bytes as the tarball, and tar reported "not in gzip
+      # format". Every run since the gate was added failed there, which is also why
+      # no run has ever reached the manifests. -f now makes a bad URL fail at the
+      # download, where the reason is legible.
       - name: Install kubeconform
         run: |
-          curl -sSL -o /tmp/kc.tar.gz \
-            https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz
+          curl -fsSL -o /tmp/kc.tar.gz \
+            "https://github.com/yannh/kubeconform/releases/download/v${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz"
           tar -xzf /tmp/kc.tar.gz -C /usr/local/bin kubeconform
+          kubeconform -v
+
       - name: Install kyverno CLI
         run: |
-          curl -sSL -o /tmp/ky.tar.gz \
-            https://github.com/kyverno/kyverno/releases/latest/download/kyverno-cli_linux_x86_64.tar.gz
+          curl -fsSL -o /tmp/ky.tar.gz \
+            "https://github.com/kyverno/kyverno/releases/download/v${KYVERNO_VERSION}/kyverno-cli_v${KYVERNO_VERSION}_linux_x86_64.tar.gz"
           tar -xzf /tmp/ky.tar.gz -C /usr/local/bin kyverno
+          kyverno version
+
       - name: Validate service manifests
         run: ./scripts/validate.sh apps
