@@ -32,7 +32,7 @@ sys.stdout.write(re.sub(r"<!--rate:(\w+)-->.*?<!--/rate-->",
     lambda m: f"<!--rate:{m.group(1)}-->{vals[m.group(1)]}<!--/rate-->", page))'
 }
 
-PAGES=(index.html how-it-works.html)
+PAGES=(index.html how-it-works.html features.html)
 FONTS=(schibsted-grotesk.woff2 ibm-plex-mono-400.woff2 ibm-plex-mono-500.woff2)
 # Brand assets, served at /brand/ from their own ConfigMap so Authentik and mail
 # clients have a stable address for the wordmark. Text and binary are split
