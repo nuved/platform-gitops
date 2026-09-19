@@ -105,3 +105,14 @@ done
 printf '%-28s %7s bytes\n' "brand.yaml" "$(wc -c < brand.yaml | tr -d ' ')"
 printf '%-28s %7s bytes (ConfigMap objects are capped at 1 MiB = 1048576)\n' "configmap.yaml" "$total"
 [ "$total" -lt 1048576 ] || { echo "configmap.yaml is over the 1 MiB ConfigMap limit" >&2; exit 1; }
+
+# nginx reads its config once, at start; a changed checksum on the pod template makes
+# Argo roll the pods when nginx.conf.yaml changes.
+sum=$(shasum -a 256 nginx.conf.yaml | cut -c1-64)
+python3 - "$sum" <<'PY'
+import re, sys
+p = "www.yaml"; s = open(p).read()
+s2 = re.sub(r'(nuved\.io/nginx-conf-sha256: )"[0-9a-f]*"', r'\g<1>"%s"' % sys.argv[1], s)
+assert s2 != s or sys.argv[1] in s, "annotation missing from www.yaml"
+open(p, "w").write(s2)
+PY
