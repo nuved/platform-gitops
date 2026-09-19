@@ -404,10 +404,11 @@ explicit requests — anything larger the server refuses.</pre>
     <div class="pricing">
       <div>
         <table class="rates">
-          <tr><th scope="row">Compute</th><td class="num">€0.04<small>per vCPU-hour</small></td></tr>
-          <tr><th scope="row">Memory</th><td class="num">€0.01<small>per GiB-hour</small></td></tr>
-          <tr><th scope="row">Disk</th><td class="num">€0.20<small>per GB a month</small></td></tr>
+          <tr><th scope="row">Compute</th><td class="num"><!--rate:cpu-->€0.105<!--/rate--><small>per vCPU-hour</small></td></tr>
+          <tr><th scope="row">Memory</th><td class="num"><!--rate:mem-->€0.0069<!--/rate--><small>per GiB-hour</small></td></tr>
+          <tr><th scope="row">Disk</th><td class="num"><!--rate:disk-->€0.0825<!--/rate--><small>per GB a month</small></td></tr>
         </table>
+        <p class="topups">Rates since <!--rate:since-->17 September 2026<!--/rate-->, derived from our AWS bill. <a href="/how-it-works#enforced">How</a></p>
         <p class="topups">Top up <b>€10</b>, <b>€25</b>, <b>€50</b> or <b>€100</b>. Balance never expires.</p>
         <p class="zero">At zero, services pause and nothing is deleted. Top up and they come back with the replicas they had.</p>
       </div>

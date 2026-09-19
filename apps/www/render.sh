@@ -10,6 +10,28 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# The price table is filled from the live rate card at render time, so the page stays
+# static and script-free. RATES_JSON overrides the fetch (tests, offline renders).
+RATES_JSON="${RATES_JSON:-$(curl -fsS --max-time 20 https://api.nuved.io/v1/rates)}"
+fill_rates() { # stdin: a page; stdout: the page with every <!--rate:X-->…<!--/rate--> filled
+  RATES_JSON="$RATES_JSON" python3 -c '
+import json, os, re, sys, datetime
+c = json.loads(os.environ["RATES_JSON"])
+def eur(x):
+    s = f"{x:.4f}".rstrip("0").rstrip(".")
+    return "€" + (s if "." in s else s + ".00")
+since = datetime.datetime.fromisoformat(c["since"].replace("Z", "+00:00"))
+vals = {
+    "cpu": eur(c["cpu_micro_per_milli_hour"] * 1000 / 1e6),
+    "mem": eur(c["mem_micro_per_gib_hour"] / 1e6),
+    "disk": eur(c["disk_micro_per_gb_month"] / 1e6),
+    "since": f"{since.day} {since:%B %Y}",
+}
+page = sys.stdin.read()
+sys.stdout.write(re.sub(r"<!--rate:(\w+)-->.*?<!--/rate-->",
+    lambda m: f"<!--rate:{m.group(1)}-->{vals[m.group(1)]}<!--/rate-->", page))'
+}
+
 PAGES=(index.html how-it-works.html)
 FONTS=(schibsted-grotesk.woff2 ibm-plex-mono-400.woff2 ibm-plex-mono-500.woff2)
 # Brand assets, served at /brand/ from their own ConfigMap so Authentik and mail
@@ -38,7 +60,7 @@ data:
 HEAD
   for page in "${PAGES[@]}"; do
     printf '  %s: |\n' "$page"
-    sed 's/^/    /' "$page"
+    fill_rates < "$page" | sed 's/^/    /'
   done
   printf 'binaryData:\n'
   for font in "${FONTS[@]}"; do
