@@ -1,0 +1,22 @@
+# The rate card is re-derived daily at 06:00 UTC and changes only on >5% drift.
+# This re-renders the homepage at 06:30 and commits only when the numbers moved.
+name: rates
+on:
+  schedule: [{ cron: "30 6 * * *" }]
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render
+        run: apps/www/render.sh
+      - name: Commit if the card moved
+        run: |
+          if git diff --quiet -- apps/www/configmap.yaml; then echo "card unchanged"; exit 0; fi
+          git config user.name "Novid"
+          git config user.email "support@nimanou.com"
+          git commit -am "Homepage: rates from the current card"
+          git push
