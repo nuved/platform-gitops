@@ -415,11 +415,11 @@ explicit requests — anything larger the server refuses.</pre>
       </div>
       <div>
         <ul class="examples" aria-label="What things cost">
-          <li><span><b>A tiny service</b><span class="spec num">0.1 vCPU, 128 MiB</span></span><span class="cost num">€4<small>a month</small></span></li>
-          <li><span><b>A small API</b><span class="spec num">0.25 vCPU, 512 MiB</span></span><span class="cost num">€11<small>a month</small></span></li>
-          <li><span><b>An app, a worker and Postgres</b><span class="spec num">1 vCPU, 2 GiB, 10 GB of disk</span></span><span class="cost num">€46<small>a month</small></span></li>
+          <li><span><b>A tiny service</b><span class="spec num">0.1 vCPU, 128 MiB</span></span><span class="cost num"><!--rate:ex_tiny-->€8<!--/rate--><small>a month</small></span></li>
+          <li><span><b>A small API</b><span class="spec num">0.25 vCPU, 512 MiB</span></span><span class="cost num"><!--rate:ex_small-->€22<!--/rate--><small>a month</small></span></li>
+          <li><span><b>An app, a worker and Postgres</b><span class="spec num">1 vCPU, 2 GiB, 10 GB of disk</span></span><span class="cost num"><!--rate:ex_app-->€88<!--/rate--><small>a month</small></span></li>
         </ul>
-        <p class="zero">Rates come from what the machines cost us plus a margin, and they fall when the machines get cheaper. You pay for what a service reserves, which is the number the console shows you.</p>
+        <p class="zero">Rates come from what the machines cost us<!--rate:margin--><!--/rate-->, divided by the capacity we can sell, and they fall when the machines get cheaper. You pay for what a service reserves, which is the number the console shows you.</p>
       </div>
     </div>
     <div class="price-cta">

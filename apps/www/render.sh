@@ -27,6 +27,15 @@ vals = {
     "disk": eur(c["disk_micro_per_gb_month"] / 1e6),
     "since": f"{since.day} {since:%B %Y}",
 }
+# The examples on the page, priced from the same card: 730 hours make a month.
+def month(cpu_milli, mem_gib, disk_gb=0):
+    hourly = cpu_milli * c["cpu_micro_per_milli_hour"] + mem_gib * c["mem_micro_per_gib_hour"]
+    return "€%d" % round((730 * hourly + disk_gb * c["disk_micro_per_gb_month"]) / 1e6)
+vals["ex_tiny"] = month(100, 0.125)
+vals["ex_small"] = month(250, 0.5)
+vals["ex_app"] = month(1000, 2, 10)
+margin = (c.get("derived_from") or {}).get("margin") or 0
+vals["margin"] = " plus a %g%% margin" % (margin * 100) if margin > 0 else ""
 page = sys.stdin.read()
 sys.stdout.write(re.sub(r"<!--rate:(\w+)-->.*?<!--/rate-->",
     lambda m: f"<!--rate:{m.group(1)}-->{vals[m.group(1)]}<!--/rate-->", page))'

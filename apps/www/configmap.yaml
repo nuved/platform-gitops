@@ -421,21 +421,21 @@ data:
         <div class="pricing">
           <div>
             <table class="rates">
-              <tr><th scope="row">Compute</th><td class="num"><!--rate:cpu-->€0.105<!--/rate--><small>per vCPU-hour</small></td></tr>
-              <tr><th scope="row">Memory</th><td class="num"><!--rate:mem-->€0.0069<!--/rate--><small>per GiB-hour</small></td></tr>
-              <tr><th scope="row">Disk</th><td class="num"><!--rate:disk-->€0.0825<!--/rate--><small>per GB a month</small></td></tr>
+              <tr><th scope="row">Compute</th><td class="num"><!--rate:cpu-->€0.13<!--/rate--><small>per vCPU-hour</small></td></tr>
+              <tr><th scope="row">Memory</th><td class="num"><!--rate:mem-->€0.0086<!--/rate--><small>per GiB-hour</small></td></tr>
+              <tr><th scope="row">Disk</th><td class="num"><!--rate:disk-->€0.0829<!--/rate--><small>per GB a month</small></td></tr>
             </table>
-            <p class="topups">Rates since <!--rate:since-->17 September 2026<!--/rate-->, derived from our AWS bill. <a href="/how-it-works#enforced">How</a></p>
+            <p class="topups">Rates since <!--rate:since-->19 September 2026<!--/rate-->, derived from our AWS bill. <a href="/how-it-works#enforced">How</a></p>
             <p class="topups">Top up <b>€10</b>, <b>€25</b>, <b>€50</b> or <b>€100</b>. Balance never expires.</p>
             <p class="zero">At zero, services pause and nothing is deleted. Top up and they come back with the replicas they had.</p>
           </div>
           <div>
             <ul class="examples" aria-label="What things cost">
-              <li><span><b>A tiny service</b><span class="spec num">0.1 vCPU, 128 MiB</span></span><span class="cost num">€4<small>a month</small></span></li>
-              <li><span><b>A small API</b><span class="spec num">0.25 vCPU, 512 MiB</span></span><span class="cost num">€11<small>a month</small></span></li>
-              <li><span><b>An app, a worker and Postgres</b><span class="spec num">1 vCPU, 2 GiB, 10 GB of disk</span></span><span class="cost num">€46<small>a month</small></span></li>
+              <li><span><b>A tiny service</b><span class="spec num">0.1 vCPU, 128 MiB</span></span><span class="cost num"><!--rate:ex_tiny-->€10<!--/rate--><small>a month</small></span></li>
+              <li><span><b>A small API</b><span class="spec num">0.25 vCPU, 512 MiB</span></span><span class="cost num"><!--rate:ex_small-->€27<!--/rate--><small>a month</small></span></li>
+              <li><span><b>An app, a worker and Postgres</b><span class="spec num">1 vCPU, 2 GiB, 10 GB of disk</span></span><span class="cost num"><!--rate:ex_app-->€108<!--/rate--><small>a month</small></span></li>
             </ul>
-            <p class="zero">Rates come from what the machines cost us plus a margin, and they fall when the machines get cheaper. You pay for what a service reserves, which is the number the console shows you.</p>
+            <p class="zero">Rates come from what the machines cost us<!--rate:margin--><!--/rate-->, divided by the capacity we can sell, and they fall when the machines get cheaper. You pay for what a service reserves, which is the number the console shows you.</p>
           </div>
         </div>
         <div class="price-cta">
