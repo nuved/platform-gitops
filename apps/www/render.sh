@@ -10,7 +10,38 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-PAGES=(index.html how-it-works.html)
+# The price table is filled from the live rate card at render time, so the page stays
+# static and script-free. RATES_JSON overrides the fetch (tests, offline renders).
+RATES_JSON="${RATES_JSON:-$(curl -fsS --max-time 20 https://api.nuved.io/v1/rates)}"
+fill_rates() { # stdin: a page; stdout: the page with every <!--rate:X-->…<!--/rate--> filled
+  RATES_JSON="$RATES_JSON" python3 -c '
+import json, os, re, sys, datetime
+c = json.loads(os.environ["RATES_JSON"])
+def eur(x):
+    s = f"{x:.4f}".rstrip("0").rstrip(".")
+    return "€" + (s if "." in s else s + ".00")
+since = datetime.datetime.fromisoformat(c["since"].replace("Z", "+00:00"))
+vals = {
+    "cpu": eur(c["cpu_micro_per_milli_hour"] * 1000 / 1e6),
+    "mem": eur(c["mem_micro_per_gib_hour"] / 1e6),
+    "disk": eur(c["disk_micro_per_gb_month"] / 1e6),
+    "since": f"{since.day} {since:%B %Y}",
+}
+# The examples on the page, priced from the same card: 730 hours make a month.
+def month(cpu_milli, mem_gib, disk_gb=0):
+    hourly = cpu_milli * c["cpu_micro_per_milli_hour"] + mem_gib * c["mem_micro_per_gib_hour"]
+    return "€%d" % round((730 * hourly + disk_gb * c["disk_micro_per_gb_month"]) / 1e6)
+vals["ex_tiny"] = month(100, 0.125)
+vals["ex_small"] = month(250, 0.5)
+vals["ex_app"] = month(1000, 2, 10)
+margin = (c.get("derived_from") or {}).get("margin") or 0
+vals["margin"] = " plus a %g%% margin" % (margin * 100) if margin > 0 else ""
+page = sys.stdin.read()
+sys.stdout.write(re.sub(r"<!--rate:(\w+)-->.*?<!--/rate-->",
+    lambda m: f"<!--rate:{m.group(1)}-->{vals[m.group(1)]}<!--/rate-->", page))'
+}
+
+PAGES=(index.html how-it-works.html features.html)
 FONTS=(schibsted-grotesk.woff2 ibm-plex-mono-400.woff2 ibm-plex-mono-500.woff2)
 # Brand assets, served at /brand/ from their own ConfigMap so Authentik and mail
 # clients have a stable address for the wordmark. Text and binary are split
@@ -38,7 +69,7 @@ data:
 HEAD
   for page in "${PAGES[@]}"; do
     printf '  %s: |\n' "$page"
-    sed 's/^/    /' "$page"
+    fill_rates < "$page" | sed 's/^/    /'
   done
   printf 'binaryData:\n'
   for font in "${FONTS[@]}"; do
@@ -83,3 +114,14 @@ done
 printf '%-28s %7s bytes\n' "brand.yaml" "$(wc -c < brand.yaml | tr -d ' ')"
 printf '%-28s %7s bytes (ConfigMap objects are capped at 1 MiB = 1048576)\n' "configmap.yaml" "$total"
 [ "$total" -lt 1048576 ] || { echo "configmap.yaml is over the 1 MiB ConfigMap limit" >&2; exit 1; }
+
+# nginx reads its config once, at start; a changed checksum on the pod template makes
+# Argo roll the pods when nginx.conf.yaml changes.
+sum=$(shasum -a 256 nginx.conf.yaml | cut -c1-64)
+python3 - "$sum" <<'PY'
+import re, sys
+p = "www.yaml"; s = open(p).read()
+s2 = re.sub(r'(nuved\.io/nginx-conf-sha256: )"[0-9a-f]*"', r'\g<1>"%s"' % sys.argv[1], s)
+assert s2 != s or sys.argv[1] in s, "annotation missing from www.yaml"
+open(p, "w").write(s2)
+PY

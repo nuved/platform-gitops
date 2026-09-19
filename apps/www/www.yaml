@@ -16,6 +16,8 @@ spec:
     metadata:
       labels:
         app: www
+      annotations:
+        nuved.io/nginx-conf-sha256: "b859c1ed1695e4db371475ab9e1090d6a01c94ef5fc715df9b215528df47db2d"
     spec:
       # PSS restricted, set at pod level so the tenancy-restricted Kyverno policy's
       # pod-level anyPattern matches: non-root and seccomp here, the per-container

@@ -254,6 +254,7 @@ data:
       <div class="wrap">
         <a class="mark" href="/">nuved<span>.</span></a>
         <nav aria-label="Sections">
+          <a href="/features">Everything</a>
           <a href="#pricing">Pricing</a>
           <a href="#how">How it starts</a>
           <a href="https://api.nuved.io/docs">API docs</a>
@@ -420,20 +421,21 @@ data:
         <div class="pricing">
           <div>
             <table class="rates">
-              <tr><th scope="row">Compute</th><td class="num">€0.04<small>per vCPU-hour</small></td></tr>
-              <tr><th scope="row">Memory</th><td class="num">€0.01<small>per GiB-hour</small></td></tr>
-              <tr><th scope="row">Disk</th><td class="num">€0.20<small>per GB a month</small></td></tr>
+              <tr><th scope="row">Compute</th><td class="num"><!--rate:cpu-->€0.13<!--/rate--><small>per vCPU-hour</small></td></tr>
+              <tr><th scope="row">Memory</th><td class="num"><!--rate:mem-->€0.0086<!--/rate--><small>per GiB-hour</small></td></tr>
+              <tr><th scope="row">Disk</th><td class="num"><!--rate:disk-->€0.0829<!--/rate--><small>per GB a month</small></td></tr>
             </table>
+            <p class="topups">Rates since <!--rate:since-->19 September 2026<!--/rate-->, derived from our AWS bill. <a href="/how-it-works#enforced">How</a></p>
             <p class="topups">Top up <b>€10</b>, <b>€25</b>, <b>€50</b> or <b>€100</b>. Balance never expires.</p>
             <p class="zero">At zero, services pause and nothing is deleted. Top up and they come back with the replicas they had.</p>
           </div>
           <div>
             <ul class="examples" aria-label="What things cost">
-              <li><span><b>A tiny service</b><span class="spec num">0.1 vCPU, 128 MiB</span></span><span class="cost num">€4<small>a month</small></span></li>
-              <li><span><b>A small API</b><span class="spec num">0.25 vCPU, 512 MiB</span></span><span class="cost num">€11<small>a month</small></span></li>
-              <li><span><b>An app, a worker and Postgres</b><span class="spec num">1 vCPU, 2 GiB, 10 GB of disk</span></span><span class="cost num">€46<small>a month</small></span></li>
+              <li><span><b>A tiny service</b><span class="spec num">0.1 vCPU, 128 MiB</span></span><span class="cost num"><!--rate:ex_tiny-->€10<!--/rate--><small>a month</small></span></li>
+              <li><span><b>A small API</b><span class="spec num">0.25 vCPU, 512 MiB</span></span><span class="cost num"><!--rate:ex_small-->€27<!--/rate--><small>a month</small></span></li>
+              <li><span><b>An app, a worker and Postgres</b><span class="spec num">1 vCPU, 2 GiB, 10 GB of disk</span></span><span class="cost num"><!--rate:ex_app-->€108<!--/rate--><small>a month</small></span></li>
             </ul>
-            <p class="zero">Rates come from what the machines cost us plus a margin, and they fall when the machines get cheaper. You pay for what a service reserves, which is the number the console shows you.</p>
+            <p class="zero">Rates come from what the machines cost us<!--rate:margin--><!--/rate-->, divided by the capacity we can sell, and they fall when the machines get cheaper. You pay for what a service reserves, which is the number the console shows you.</p>
           </div>
         </div>
         <div class="price-cta">
@@ -480,7 +482,8 @@ data:
     
     <footer>
       <div class="wrap">
-        <a href="how-it-works.html">How it works</a>
+        <a href="/how-it-works">How it works</a>
+        <a href="/features">Everything Nuved does</a>
         <a href="https://api.nuved.io/docs">API docs</a>
         <a href="https://get.nuved.io/">Install the CLI</a>
         <a href="https://github.com/nuved/platform-gitops">Source on GitHub</a>
@@ -641,6 +644,7 @@ data:
       <div class="wrap">
         <a class="mark" href="/">nuved<span>.</span></a>
         <nav aria-label="Sections">
+          <a href="/features">Everything</a>
           <a href="/#pricing">Pricing</a>
           <a href="https://api.nuved.io/docs">API docs</a>
           <a href="https://console.nuved.io/login">Sign in</a>
@@ -780,6 +784,246 @@ data:
       <div class="wrap">
         <ul>
           <li><a href="/">Homepage</a></li>
+          <li><a href="/features">Everything Nuved does</a></li>
+          <li><a href="https://api.nuved.io/docs">API docs</a></li>
+          <li><a href="https://get.nuved.io/">Install the CLI</a></li>
+          <li><a href="https://github.com/nuved/platform-gitops">Source on GitHub</a></li>
+          <li><a href="mailto:hello@nuved.io?subject=Invitation%20to%20the%20Nuved%20preview">Request an invitation</a></li>
+        </ul>
+        <p>Preview, built and operated by one engineer. This page is served from the platform itself, deployed from <code>apps/www</code> by Argo CD.</p>
+      </div>
+    </footer>
+    
+    </body>
+    </html>
+  features.html: |
+    <!doctype html>
+    <html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Everything Nuved does</title>
+    <meta name="description" content="What actually runs behind a Nuved project: who signs you in, what a top-up creates, how an agent token reaches one namespace and nothing else, and which rules the cluster refuses to break.">
+    <meta name="color-scheme" content="dark light">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B5563'/%3E%3Cpath d='M9 23V9l14 14V9' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='square'/%3E%3C/svg%3E">
+    <style>
+    @font-face{
+      font-family:"Schibsted Grotesk";
+      src:url(schibsted-grotesk.woff2) format("woff2");
+      font-weight:400 700; font-style:normal; font-display:swap;
+    }
+    @font-face{
+      font-family:"IBM Plex Mono";
+      src:url(ibm-plex-mono-400.woff2) format("woff2");
+      font-weight:400; font-style:normal; font-display:swap;
+    }
+    @font-face{
+      font-family:"IBM Plex Mono";
+      src:url(ibm-plex-mono-500.woff2) format("woff2");
+      font-weight:500; font-style:normal; font-display:swap;
+    }
+    :root{
+      --ground:#0B1516; --surface:#122022; --sunken:#0A1213;
+      --ink:#E3ECEB; --ink-2:#9DB1B3; --line:#26393C; --line-strong:#48616A;
+      --brand:#63C3D2; --brand-soft:#123A42; --on-brand:#06171A;
+      --ok:#7FD3A3; --ok-bg:#14301F;
+      --no:#F0A090; --no-bg:#3A1C17;
+      --focus:#63C3D2;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --ground:#F2F5F5; --surface:#FFFFFF; --sunken:#E6ECEC;
+        --ink:#12262A; --ink-2:#4C6165; --line:#CBD7D7; --line-strong:#98ACAE;
+        --brand:#0B5563; --brand-soft:#DCEBEC; --on-brand:#FFFFFF;
+        --ok:#2C6E48; --ok-bg:#E1F0E6;
+        --no:#A63A2C; --no-bg:#F7E4E0;
+        --focus:#0B5563;
+      }
+    }
+    *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%}
+    body{
+      margin:0; background:var(--ground); color:var(--ink);
+      font-family:"Schibsted Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      font-size:17px; line-height:1.55;
+    }
+    code,.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    a{color:var(--brand)}
+    a:focus-visible{outline:3px solid var(--focus); outline-offset:3px; border-radius:3px}
+    .wrap{max-width:1080px; margin:0 auto; padding-left:24px; padding-right:24px}
+    h1,h2,h3{line-height:1.12; letter-spacing:-0.02em; margin:0; text-wrap:balance}
+    h1{font-size:46px; font-weight:700}
+    h2{font-size:30px; font-weight:700; margin-bottom:10px}
+    h3{font-size:18px; font-weight:700}
+    p{margin:0 0 16px}
+    
+    .top{border-bottom:1px solid var(--line); background:var(--surface)}
+    .top .wrap{display:flex; flex-wrap:wrap; align-items:center; gap:8px 24px; padding-block:12px}
+    .mark{font-size:22px; font-weight:700; letter-spacing:-0.03em; color:var(--ink); text-decoration:none; padding:12px 0}
+    .mark span{color:var(--brand)}
+    .top nav{display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; margin-left:auto}
+    .top nav a{font-size:16px; color:var(--ink-2); text-decoration:none; padding:12px 10px; display:inline-block; border-radius:6px}
+    .top nav a:hover{color:var(--brand); background:var(--brand-soft)}
+    .top nav a.go{color:var(--on-brand); background:var(--brand); font-weight:500; padding:12px 16px}
+    .top nav a.go:hover{background:var(--ink); color:var(--ground)}
+    
+    .lead{padding-top:56px}
+    .back{font-size:16px; color:var(--ink-2); text-decoration:none; display:inline-block; padding:12px 0}
+    .back:hover{color:var(--brand)}
+    .lead h1{margin:8px 0 16px; max-width:20ch}
+    .lead p{font-size:20px; color:var(--ink-2); max-width:62ch}
+    
+    section{padding-top:72px}
+    .kicker{font-size:17px; color:var(--ink-2); max-width:66ch; margin:0 0 28px}
+    
+    /* the numbered rail */
+    .rail{list-style:none; margin:0; padding:0; border-left:2px solid var(--line-strong); max-width:74ch}
+    .rail li{position:relative; padding:0 0 30px 28px}
+    .rail li:last-child{padding-bottom:8px}
+    .rail li::before{content:""; position:absolute; left:-7px; top:8px; width:12px; height:12px; background:var(--brand); border-radius:50%}
+    .step-n{font-family:"IBM Plex Mono",monospace; font-size:14px; color:var(--ink-2); margin-right:10px}
+    .rail p{margin:6px 0 0; font-size:16px; color:var(--ink-2); max-width:64ch}
+    .rail p + p{margin-top:8px}
+    .by{font-family:"IBM Plex Mono",monospace; font-size:13.5px; color:var(--brand)}
+    
+    /* the flow diagram, built from boxes so it reflows instead of scaling down */
+    .flow{display:flex; flex-direction:column; gap:22px; margin:0 0 20px}
+    .lane{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:16px 18px}
+    .lane h3{font-size:16px; margin-bottom:12px; letter-spacing:0}
+    .chain{display:flex; flex-wrap:wrap; align-items:center; gap:8px 6px; margin:0; padding:0; list-style:none}
+    .chain li{display:flex; align-items:center; gap:6px}
+    .node{display:inline-block; border:1px solid var(--line-strong); border-radius:6px; padding:8px 12px;
+      font-family:"IBM Plex Mono",monospace; font-size:13.5px; background:var(--sunken); color:var(--ink); white-space:nowrap}
+    .node.you{border-color:var(--brand); color:var(--brand); background:var(--brand-soft)}
+    .node.wall{border-color:var(--ok); color:var(--ok); background:var(--ok-bg)}
+    .node.stop{border-color:var(--no); color:var(--no); background:var(--no-bg)}
+    .hop{color:var(--ink-2); font-size:15px; flex:none}
+    .lane figcaption{font-size:15px; color:var(--ink-2); margin-top:12px; max-width:70ch}
+    
+    /* the enforcement table */
+    .enforced{list-style:none; margin:0; padding:0; border-top:2px solid var(--ink)}
+    .enforced li{display:flex; flex-wrap:wrap; gap:6px 16px; align-items:baseline; justify-content:space-between;
+      padding:14px 0; border-bottom:1px solid var(--line); font-size:16px}
+    .enforced li > span:first-child{flex:1 1 24ch; min-width:0}
+    .where{font-family:"IBM Plex Mono",monospace; font-size:13px; color:var(--ink-2); background:var(--sunken);
+      border:1px solid var(--line); padding:5px 9px; border-radius:4px; white-space:nowrap; flex:none}
+    
+    .note{background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--brand);
+      border-radius:8px; padding:20px 22px; max-width:74ch}
+    .note h3{margin-bottom:10px}
+    .note p:last-child{margin-bottom:0}
+    .note ul{margin:0; padding-left:20px; color:var(--ink-2); font-size:16px}
+    .note li{margin-bottom:8px}
+    .warn{border-left-color:var(--no)}
+    .btn{display:inline-flex; align-items:center; justify-content:center; text-align:center;
+      min-height:48px; padding:12px 28px; border-radius:6px; font-size:17px; font-weight:500;
+      text-decoration:none; border:2px solid var(--brand); background:var(--brand); color:var(--on-brand)}
+    .btn:hover{background:var(--ink); border-color:var(--ink); color:var(--ground)}
+    .cta{display:flex; flex-wrap:wrap; gap:14px; margin-top:28px}
+    
+    footer{margin-top:80px; border-top:1px solid var(--line); background:var(--surface); padding:32px 0 48px}
+    footer ul{list-style:none; margin:0 0 12px; padding:0; display:flex; flex-wrap:wrap; gap:4px 32px}
+    footer ul a{font-size:16px; padding:12px 0; display:inline-block}
+    footer p{font-size:15px; color:var(--ink-2); margin:0; max-width:64ch}
+    
+    @media (max-width:820px){
+      body{font-size:16px}
+      h1{font-size:34px}
+      h2{font-size:25px}
+      .wrap{padding-left:16px; padding-right:16px}
+      .lead{padding-top:40px}
+      .lead p{font-size:18px}
+      section{padding-top:56px}
+      .node{font-size:12.5px; padding:7px 10px; white-space:normal}
+      .cta .btn{width:100%}
+    }
+    @media (prefers-reduced-motion:reduce){*{transition:none !important; animation:none !important}}
+    </style>
+    </head>
+    <body>
+    
+    <header class="top">
+      <div class="wrap">
+        <a class="mark" href="/">nuved<span>.</span></a>
+        <nav aria-label="Sections">
+          <a href="/#pricing">Pricing</a>
+          <a href="https://api.nuved.io/docs">API docs</a>
+          <a href="https://console.nuved.io/login">Sign in</a>
+          <a class="go" href="https://console.nuved.io/signup">Create account</a>
+        </nav>
+      </div>
+    </header>
+    
+    <main>
+      <div class="wrap">
+        <div class="lead">
+          <a class="back" href="/">Back to the homepage</a>
+          <h1>Everything Nuved does</h1>
+          <p>Every line is something you can use today, and the tag says where. What is being built is listed apart, at the bottom.</p>
+        </div>
+    
+        <section id="money">
+          <h2>Money</h2>
+          <ul class="enforced">
+            <li><span>Top up by card through Stripe (test mode during the preview)</span><span class="where">console</span></li>
+            <li><span>Charged by the hour for what each project reserves, at rates derived daily from our AWS bill</span><span class="where">console, API</span></li>
+            <li><span>At zero, services pause and nothing is deleted; a top-up brings them back as they were</span><span class="where">automatic</span></li>
+          </ul>
+        </section>
+    
+        <section id="projects">
+          <h2>Projects</h2>
+          <ul class="enforced">
+            <li><span>Each project is its own isolated namespace with CPU and memory caps you set</span><span class="where">console, CLI, API</span></li>
+            <li><span>No internet egress by default; one NetworkPolicy of yours opens it, and cloud metadata stays closed</span><span class="where">kubectl</span></li>
+            <li><span>Give a service a public HTTPS address in a second, and take it away again</span><span class="where">console, <code>nuved expose</code></span></li>
+            <li><span>Plain kubectl: download a kubeconfig for one project</span><span class="where">console, <code>nuved kubeconfig</code></span></li>
+          </ul>
+        </section>
+    
+        <section id="agents">
+          <h2>Coding agents</h2>
+          <ul class="enforced">
+            <li><span>An agent token can't top up, change caps, or reach another project; it is refused with a sentence</span><span class="where">kube.nuved.io</span></li>
+            <li><span>A skill that teaches Claude Code, Codex or Cursor what it may do here</span><span class="where"><code>nuved skill install</code></span></li>
+          </ul>
+        </section>
+    
+        <section id="people">
+          <h2>People and sign-in</h2>
+          <ul class="enforced">
+            <li><span>Teammates share one organization's balance, projects and tokens</span><span class="where">console</span></li>
+            <li><span>The CLI signs in with a code you approve in the browser</span><span class="where"><code>nuved login</code></span></li>
+          </ul>
+        </section>
+    
+        <section id="tools">
+          <h2>Tools</h2>
+          <ul class="enforced">
+            <li><span>The CLI: <code>curl -fsSL https://get.nuved.io/install.sh | sh</code></span><span class="where">get.nuved.io</span></li>
+            <li><span>The whole API, documented, with every call the console makes</span><span class="where"><a href="https://api.nuved.io/docs">api.nuved.io/docs</a></span></li>
+          </ul>
+        </section>
+    
+        <section id="building">
+          <h2>Being built</h2>
+          <p class="kicker">Not live yet. Listed so you know what is coming, not as a promise of a date.</p>
+          <ul class="enforced">
+            <li><span>Logs, usage by project, receipts and spend alerts in the console</span><span class="where">next</span></li>
+            <li><span>Addresses on nuved.app, apart from the platform's own domain</span><span class="where">next</span></li>
+            <li><span>Deploy from a folder, with a history of deploys and one-click rollback</span><span class="where">later</span></li>
+            <li><span>Your code in a git repository we host, with a download and a mirror to GitHub</span><span class="where">later</span></li>
+            <li><span>Agents that write and deploy a service from a prompt on the website</span><span class="where">later</span></li>
+          </ul>
+        </section>
+      </div>
+    </main>
+    
+    <footer>
+      <div class="wrap">
+        <ul>
+          <li><a href="/">Homepage</a></li>
+          <li><a href="/how-it-works">How it works</a></li>
           <li><a href="https://api.nuved.io/docs">API docs</a></li>
           <li><a href="https://get.nuved.io/">Install the CLI</a></li>
           <li><a href="https://github.com/nuved/platform-gitops">Source on GitHub</a></li>
