@@ -154,11 +154,11 @@ section{padding-top:96px}
 .ledger li{display:grid; grid-template-columns:24px 1fr; gap:12px; align-items:start; font-size:17px; line-height:1.45}
 .ledger li svg{width:22px; height:22px; margin-top:2px}
 .ledger .can li svg{color:var(--ok)}
-.ledger .cant li svg{color:var(--no)}
+.ledger .cant li svg{color:var(--brand)}
 .ledger li small{display:block; color:var(--ink-2); font-size:15px; margin-top:2px}
 .enforced{margin-top:28px; padding:16px 20px; background:var(--brand-soft); color:var(--ink); border-radius:8px; font-size:16px; max-width:70ch}
-.notyet{margin-top:16px; padding:16px 20px; border:1px solid var(--line-strong); border-left:4px solid var(--no); border-radius:8px; font-size:16px; max-width:70ch; color:var(--ink)}
-.notyet b{color:var(--no)}
+.notyet{margin-top:16px; padding:16px 20px; border:1px solid var(--line-strong); border-left:4px solid var(--brand); border-radius:8px; font-size:16px; max-width:70ch; color:var(--ink)}
+.notyet b{color:var(--ink)}
 
 /* how it starts */
 .steps{counter-reset:s; list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:32px}
@@ -297,17 +297,14 @@ service/api created
 NAME        STATUS
 acme-shop   Active
 <span class="dim"># its own project, and nothing else</span>
-<span class="gap"></span><span class="p">$</span> kubectl -n acme-billing get pods
-<span class="no">Error from server (Forbidden): this token
-was made for the project acme-shop</span>
-<span class="gap"></span><span class="p">$</span> kubectl apply -f k8s/big.yaml <span class="dim"># 2 vCPU</span>
-deployment.apps/big created
-<span class="p">$</span> kubectl get deploy big
-NAME   READY   UP-TO-DATE   AVAILABLE
-<span class="no">big    0/1     0            0</span>
-<span class="dim"># no pod of it runs: exceeded quota:
-# workspace-quota, requested: requests.cpu=2,
-# limited: requests.cpu=500m</span></pre>
+<span class="gap"></span><span class="p">$</span> nuved expose api
+<span class="ok">api answers at https://api-acme-shop.nuved.app</span>
+<span class="gap"></span><span class="p">$</span> nuved logs api -f
+14:07:31 api  INFO  GET /cart 200 11ms
+14:07:33 api  INFO  POST /checkout 201 84ms
+<span class="dim"># everything above happens inside acme-shop:
+# its own network, its own quota, its own
+# balance. Nothing it types reaches the rest.</span></pre>
         </div>
         <div class="con">
           <div class="view-label">Your console</div>
@@ -324,7 +321,7 @@ NAME   READY   UP-TO-DATE   AVAILABLE
               <div class="meter" role="img" aria-label="0.25 of 0.5 vCPU reserved"><i></i></div>
               <div class="meter-cap num"><span>0.25 vCPU reserved</span><span>512 MiB of 1 GiB</span></div>
               <div class="svc"><span class="mono">api</span><span class="pill">Healthy</span><span class="num">1/1 ready · €0.015 an hour</span></div>
-              <div class="svc"><span class="url mono">https://api-acme-shop.nuved.io</span></div>
+              <div class="svc"><span class="url mono">https://api-acme-shop.nuved.app</span></div>
             </div>
             <div class="toks">
               <h4>Tokens — each one reaches a single project</h4>
@@ -342,8 +339,8 @@ NAME   READY   UP-TO-DATE   AVAILABLE
 
   <section class="wrap" id="rules">
     <div class="sec-head">
-      <h2>What your agent can and can't do.</h2>
-      <p>The agent gets a token for one project. Everything below is enforced by the cluster itself, so none of it depends on the agent behaving.</p>
+      <h2>What your agent does, and what stays yours.</h2>
+      <p>The agent gets a token for one project. The cluster itself holds every line below, so none of it depends on the agent behaving.</p>
     </div>
     <div class="ledger">
       <div class="can">
@@ -351,22 +348,22 @@ NAME   READY   UP-TO-DATE   AVAILABLE
         <ul>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Deploy with the kubectl it already knows<small>You hand it a kubeconfig for one project. There is no agent-only tool to learn.</small></span></li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Read logs, restart and scale, inside the caps</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Give a service a public address<small>Expose on the console row, or one API call, and the platform makes the route in seconds. Your first project answers at <span class="mono">&lt;service&gt;-&lt;org&gt;.nuved.io</span>, any other at <span class="mono">&lt;service&gt;-&lt;org&gt;-&lt;project&gt;.nuved.io</span>.</small></span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Give a service a public address<small>Expose on the console row, or one API call, and the platform makes the route in seconds. Your first project answers at <span class="mono">&lt;service&gt;-&lt;org&gt;.nuved.app</span>, any other at <span class="mono">&lt;service&gt;-&lt;org&gt;-&lt;project&gt;.nuved.app</span>.</small></span></li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Delete and redeploy what it made, in its own project</span></li>
         </ul>
       </div>
       <div class="cant">
-        <h3>It can't</h3>
+        <h3>Yours alone</h3>
         <ul>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span>Spend past your balance<small>Only you can top up. There is no card on file for the agent to reach.</small></span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span>Go over the caps you set<small>The quota refuses it before anything starts, so it never runs and it is never billed.</small></span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span>Reach another project, or the machines<small>Both answer Forbidden at the door, before the request reaches Kubernetes.</small></span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span>Change the caps, the tokens or your account</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3"/><rect x="5" y="11" width="14" height="9" rx="2"/></svg><span>The money<small>Only you top up, and the balance is the ceiling: there is no card on file for an agent to reach.</small></span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3"/><rect x="5" y="11" width="14" height="9" rx="2"/></svg><span>The caps<small>You set what a project may reserve. Anything larger never starts, so it is never billed.</small></span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3"/><rect x="5" y="11" width="14" height="9" rx="2"/></svg><span>Your other projects, and the machines<small>Each project is its own walled-off space, and the platform's own machines are out of reach of every token.</small></span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3"/><rect x="5" y="11" width="14" height="9" rx="2"/></svg><span>Your account<small>Caps, tokens and people change from your console, signed in as you.</small></span></li>
         </ul>
       </div>
     </div>
     <p class="enforced">Each project is its own walled-off space: its own network, its own quota, its own rules about what a container may do. Two projects on the same account can't reach each other.</p>
-    <p class="notyet"><b>Not built yet, so you should know:</b> there is no trash and no nightly snapshot, which means a delete inside a project is final today. Give an agent a project you could afford to lose. Both are next, along with building an image straight from a folder.</p>
+    <p class="notyet"><b>One thing to know before you hand over a project:</b> a delete inside a project is final today, because trash and nightly snapshots are still being built. Both are next, along with building an image straight from a folder.</p>
   </section>
 
   <section class="wrap" id="how">
