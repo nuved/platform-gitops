@@ -37,6 +37,8 @@ either absent or carries a visible mark.
 | `www.yaml` | Deployment, Service, HTTPRoute. |
 | `schibsted-grotesk.woff2` | display and body face, variable 400–700, latin subset. |
 | `ibm-plex-mono-400.woff2`, `ibm-plex-mono-500.woff2` | the terminal and the numbers. |
+| `robots.txt` | lets every crawler in. Rendered into the ConfigMap like a page. |
+| `hetzner/` | the site on the Hetzner box: `compose.yml`, `deploy.sh`, `unpack.py`. |
 
 Both pages carry their own inline CSS and no JavaScript, and the favicon is a
 data URI. The only subresource requests either page makes are the three fonts,
@@ -67,6 +69,28 @@ prints these on every run and refuses to write a ConfigMap over the cap:
 | `how-it-works.html` | 19,042 |
 | the three fonts | 66,976 |
 | `configmap.yaml` | 138,176 |
+
+## On the Hetzner box (since 2026-10-07)
+
+The AWS cluster is gone, so the site runs as the compose project `nuved-www` in
+`/srv/nuved/www` on the shared box, built from the same generated files:
+`hetzner/unpack.py` writes `configmap.yaml`, `brand.yaml` and `nginx.conf.yaml`
+out as the files the pod had mounted, and the container keeps the pod's settings
+(uid 101, read-only root, `/tmp` only). It publishes no port. The box's nginx
+carries `nuved.io` and `www.nuved.io` to `nuved-www:8080` on `edge-shared`
+(plans-backend `deploy/hetzner/edge/services/nuved.io.edge` and
+`www.nuved.io.edge`), with the Origin CA certificate from `~/infra/nuved-www`.
+The quiet-page Worker still answers `/` and `/index.html` itself and passes
+every other path here.
+
+```sh
+./render.sh && git commit -am "..."          # as above
+hetzner/deploy.sh up HEAD                     # that commit's site, recreated on the box
+hetzner/deploy.sh status                      # REVISION and health
+```
+
+A redeploy is a commit, and a rollback is `deploy.sh up <the previous commit>`.
+The first install needs the directory: `sudo install -d -o deploy -g deploy -m 750 /srv/nuved/www`.
 
 ## The fonts
 
