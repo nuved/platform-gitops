@@ -14,7 +14,7 @@ set -euo pipefail
 
 # nuved-box is the Mac's ~/.ssh/config Host for the box: 46.224.192.77, user deploy, port 22022.
 BOX="${BOX:-nuved-box}"
-DIR=/srv/nuved/www
+DIR=/srv/nuved/website
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 on_box() { ssh -o ConnectTimeout=10 "$BOX" "set -euo pipefail; cd $DIR; $*"; }
@@ -36,7 +36,7 @@ up)
     ;;
 status)
     on_box 'cat REVISION; docker compose ps -a
-        [ "$(docker inspect nuved-www --format "{{.State.Health.Status}}")" = healthy ] || { echo "nuved-www is not healthy"; exit 1; }
+        [ "$(docker inspect nuved-website --format "{{.State.Health.Status}}")" = healthy ] || { echo "nuved-website is not healthy"; exit 1; }
         echo healthy'
     ;;
 down)

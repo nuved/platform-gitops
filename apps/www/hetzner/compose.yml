@@ -1,6 +1,6 @@
 # nuved.io's site on the shared Hetzner box, since the AWS cluster went (2026-10-06).
 #
-# Lives at /srv/nuved/www (the nuved-data volume), put there by deploy.sh from one commit of this
+# Lives at /srv/nuved/website (the nuved-data volume), put there by deploy.sh from one commit of this
 # repo. Every path below is relative to that directory:
 #
 #   P/site/html     configmap.yaml's keys: the pages, robots.txt, the fonts (unpack.py)
@@ -9,18 +9,18 @@
 #   P/REVISION      the commit those came from
 #
 # Nothing is published on a host port. The box's nginx (sprachbrucke-nginx) reaches
-# nuved-www:8080 over edge-shared, from the edge's services/nuved.io.edge and
+# nuved-website:8080 over edge-shared, from the edge's services/nuved.io.edge and
 # services/www.nuved.io.edge (plans-backend deploy/hetzner/edge). The same container settings
 # the cluster's pod had: uid 101, read-only root, /tmp the one writable path, no capabilities.
 # compose.yml, not .yaml: scripts/validate.sh reads every *.yaml under apps/ as a Kubernetes manifest.
-name: nuved-www
+name: nuved-website
 
 services:
-  nuved-www:
+  nuved-website:
     # The multi-arch index of nginxinc/nginx-unprivileged:1.31.1-alpine, by digest (Docker Hub,
     # 2026-10-07): the line the box's own nginx runs. Keeps its pid and every *_temp_path in /tmp.
     image: nginxinc/nginx-unprivileged:1.31.1-alpine@sha256:cc300bd2e8776708a8c2c8686a74f06eadf221c5ce01e85d0e821955d7a730ab
-    container_name: nuved-www
+    container_name: nuved-website
     restart: unless-stopped
     user: "101:101"
     volumes:
@@ -42,7 +42,7 @@ services:
         bind: { create_host_path: false }
     networks:
       edge-shared:
-        aliases: [nuved-www]
+        aliases: [nuved-website]
     read_only: true
     tmpfs: [/tmp]
     cap_drop: [ALL]
