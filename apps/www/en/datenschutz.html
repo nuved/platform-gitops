@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy – Nuved</title>
+<meta name="description" content="Which personal data nuved processes, where, for how long and on what legal basis, and the rights you have.">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B5563'/%3E%3Cpath d='M9 23V9l14 14V9' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='square'/%3E%3C/svg%3E">
+<link rel="alternate" hreflang="de" href="/datenschutz.html">
+<style>
+@font-face{
+  font-family:"Schibsted Grotesk";
+  src:url(/schibsted-grotesk.woff2) format("woff2");
+  font-weight:400 700; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:"IBM Plex Mono";
+  src:url(/ibm-plex-mono-400.woff2) format("woff2");
+  font-weight:400; font-style:normal; font-display:swap;
+}
+:root{
+  --ground:#0B1516; --surface:#122022; --sunken:#0A1213;
+  --ink:#E3ECEB; --ink-2:#9DB1B3; --line:#26393C; --line-strong:#48616A;
+  --brand:#63C3D2; --brand-soft:#123A42; --on-brand:#06171A;
+  --no:#F0A090; --no-bg:#3A1C17;
+  --focus:#63C3D2;
+}
+@media (prefers-color-scheme: light){
+  :root{
+    --ground:#F2F5F5; --surface:#FFFFFF; --sunken:#E6ECEC;
+    --ink:#12262A; --ink-2:#4C6165; --line:#CBD7D7; --line-strong:#98ACAE;
+    --brand:#0B5563; --brand-soft:#DCEBEC; --on-brand:#FFFFFF;
+    --no:#A63A2C; --no-bg:#F7E4E0;
+    --focus:#0B5563;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Schibsted Grotesk",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  font-size:17px; line-height:1.55;
+}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:0.9em; overflow-wrap:anywhere}
+a{color:var(--brand)}
+a:focus-visible{outline:3px solid var(--focus); outline-offset:3px; border-radius:3px}
+.wrap{max-width:1080px; margin:0 auto; padding-left:24px; padding-right:24px}
+h1,h2,h3{line-height:1.12; letter-spacing:-0.02em; margin:0; text-wrap:balance}
+h1{font-size:46px; font-weight:700}
+h2{font-size:26px; font-weight:700; margin-bottom:12px}
+h3{font-size:18px; font-weight:700; margin:24px 0 8px}
+p{margin:0 0 16px; max-width:72ch}
+ul{max-width:72ch; padding-left:22px; margin:0 0 16px}
+li{margin-bottom:6px}
+
+.top{border-bottom:1px solid var(--line); background:var(--surface)}
+.top .wrap{display:flex; flex-wrap:wrap; align-items:center; gap:8px 24px; padding-block:12px}
+.mark{font-size:22px; font-weight:700; letter-spacing:-0.03em; color:var(--ink); text-decoration:none; padding:12px 0}
+.mark span{color:var(--brand)}
+.top nav{display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; margin-left:auto}
+.top nav a{font-size:16px; color:var(--ink-2); text-decoration:none; padding:12px 10px; display:inline-block; border-radius:6px}
+.top nav a:hover{color:var(--brand); background:var(--brand-soft)}
+
+/* the draft banner: this page is not for publication until a lawyer has reviewed it */
+.draft{background:var(--no-bg); border-bottom:2px solid var(--no); color:var(--ink)}
+.draft .wrap{padding-block:14px}
+.draft p{margin:0; font-size:16px; max-width:none}
+.draft strong{color:var(--no); letter-spacing:0.02em}
+
+.lead{padding-top:48px}
+.back{font-size:16px; color:var(--ink-2); text-decoration:none; display:inline-block; padding:12px 0}
+.back:hover{color:var(--brand)}
+.lead h1{margin:8px 0 12px}
+.lead p{font-size:18px; color:var(--ink-2)}
+section{padding-top:44px}
+address{font-style:normal; margin:0 0 16px}
+
+.toc{columns:2 26ch; column-gap:32px; max-width:none; padding-left:22px}
+.toc li{break-inside:avoid}
+
+/* a value only the operator can supply */
+mark.ph{background:var(--no-bg); color:var(--no); font-family:"IBM Plex Mono",ui-monospace,monospace;
+  font-size:0.86em; padding:1px 5px; border-radius:3px; white-space:normal; overflow-wrap:anywhere}
+
+/* a note to the reviewing lawyer, removed before publication */
+.review{border:1px dashed var(--line-strong); border-radius:8px; padding:12px 16px; margin:0 0 16px;
+  max-width:72ch; font-size:15px; color:var(--ink-2); background:var(--sunken)}
+.review b{color:var(--ink)}
+
+.note{background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--brand);
+  border-radius:8px; padding:18px 20px; max-width:72ch; margin:0 0 16px}
+.note p:last-child{margin-bottom:0}
+
+/* tables scroll inside their own box, never the page */
+.scroll{overflow-x:auto; margin:0 0 16px; border:1px solid var(--line); border-radius:8px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:640px; font-size:15px}
+th,td{text-align:left; vertical-align:top; padding:10px 12px; border-bottom:1px solid var(--line)}
+th{color:var(--ink-2); font-weight:500; background:var(--sunken)}
+tr:last-child td{border-bottom:0}
+
+footer{margin-top:80px; border-top:1px solid var(--line); background:var(--surface); padding:32px 0 48px}
+footer ul{list-style:none; margin:0 0 12px; padding:0; display:flex; flex-wrap:wrap; gap:4px 32px; max-width:none}
+footer ul a{font-size:16px; padding:12px 0; display:inline-block}
+footer p{font-size:15px; color:var(--ink-2); margin:0}
+
+@media (max-width:820px){
+  body{font-size:16px}
+  h1{font-size:34px}
+  h2{font-size:23px}
+  .wrap{padding-left:16px; padding-right:16px}
+  .lead{padding-top:32px}
+  section{padding-top:36px}
+}
+</style>
+</head>
+<body>
+
+<div class="draft" role="note">
+  <div class="wrap">
+    <p><strong lang="de">ENTWURF — anwaltliche Prüfung erforderlich.</strong> Draft, to be reviewed by a lawyer. Do not publish. Legal position as of 7 October 2026; the services are described as they ran on 7 October 2026. The operator fills the fields marked in red; the dashed review notes come out before publication. General information, not legal advice. This is a translation; the German page is the one under review.</p>
+  </div>
+</div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="/">nuved<span>.</span></a>
+    <nav aria-label="Pages">
+      <a href="/en/impressum.html">Legal notice</a>
+      <a href="/datenschutz.html" hreflang="de" lang="de">Deutsch</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="lead">
+      <a class="back" href="/">Back to the homepage</a>
+      <h1>Privacy policy</h1>
+      <p>What nuved processes about you, where, for how long and why. This policy covers nuved.io, console.nuved.io, api.nuved.io, auth.nuved.io, git.nuved.io, the <code>nuved</code> command line and the share addresses under fromnovid.com.</p>
+    </div>
+
+    <ol class="toc">
+      <li><a href="#controller">Who is responsible</a></li>
+      <li><a href="#short">The short version</a></li>
+      <li><a href="#hosting">Where the services run</a></li>
+      <li><a href="#website">When you visit nuved.io</a></li>
+      <li><a href="#account">Account and sign-in</a></li>
+      <li><a href="#console">Console, API and command line</a></li>
+      <li><a href="#payment">Paying</a></li>
+      <li><a href="#mail">Email</a></li>
+      <li><a href="#shares">Shares and guests</a></li>
+      <li><a href="#code">Code and GitHub</a></li>
+      <li><a href="#projects">Projects on nuved.app</a></li>
+      <li><a href="#traces">Debugging</a></li>
+      <li><a href="#backups">Backups</a></li>
+      <li><a href="#recipients">Recipients and transfers outside the EU</a></li>
+      <li><a href="#cookies">Cookies</a></li>
+      <li><a href="#retention">How long we keep data</a></li>
+      <li><a href="#rights">Your rights</a></li>
+      <li><a href="#other">Required data and changes</a></li>
+    </ol>
+
+    <section id="controller">
+      <h2>1. Who is responsible</h2>
+      <p>Controller within the meaning of Article 4(7) GDPR:</p>
+      <address>
+        <mark class="ph">[[ANBIETER]]</mark><br>
+        <mark class="ph">[[STRASSE_HAUSNUMMER]]</mark>, <mark class="ph">[[PLZ_ORT]]</mark>, Germany<br>
+        Email: <mark class="ph">[[DATENSCHUTZ_EMAIL]]</mark>
+      </address>
+      <p>Data protection officer: <mark class="ph">[[DSB_ODER_NICHT_BENANNT]]</mark>.</p>
+      <div class="review"><b>Review note:</b> Provider open (GrowGoddess GmbH or a natural person, LEGAL-NOTES.md question 1). Under § 38(1) BDSG an officer is required from, as a rule, 20 persons constantly engaged in automated processing, or for processing that needs a data protection impact assessment (checked on 7 October 2026 against gesetze-im-internet.de). No Article 27 GDPR representative is needed for a provider established in Germany.</div>
+    </section>
+
+    <section id="short">
+      <h2>2. The short version</h2>
+      <ul>
+        <li>All of nuved's services run on servers we rent from Hetzner in Germany. Sign-in, email, git and debugging run there under our own operation, with no further provider.</li>
+        <li>Every nuved web address goes through Cloudflare, which passes requests on to our servers and protects them from attacks.</li>
+        <li>The nuved.io website sets no cookies, loads no scripts and nothing from anyone else's servers. There is no tracking, no advertising, no analytics, and we sell no data.</li>
+        <li>Payments happen on Stripe's payment page. We never see your card details.</li>
+        <li>Backups are kept at Amazon Web Services in Frankfurt and, encrypted with keys only we hold, in a private repository on GitHub.</li>
+      </ul>
+    </section>
+
+    <section id="hosting">
+      <h2>3. Where the services run</h2>
+      <h3>Hetzner</h3>
+      <p>Our servers are cloud servers of Hetzner Online GmbH, <mark class="ph">[[HETZNER_ANSCHRIFT]]</mark>, in the Nuremberg data centre (console, sign-in, relay, git, website, debugging) and the Falkenstein data centre (mail server). Hetzner runs the hardware and the network; we run the software on it. Hetzner processes everything stored on our servers on our behalf (Article 28 GDPR).</p>
+      <h3>Cloudflare</h3>
+      <p>Every nuved web address (nuved.io, console.nuved.io, api.nuved.io, auth.nuved.io, git.nuved.io, nuved.app, relay.fromnovid.com and the share addresses under fromnovid.com) points at Cloudflare. Cloudflare accepts your connection, decrypts it, filters attacks and passes the request on to our server. In doing so Cloudflare processes your IP address, the address requested, the request headers (such as your browser) and the request's content. The DNS of our domains is at Cloudflare too. The first page of nuved.io is served by a small program at Cloudflare, so that it still appears when our server is briefly unavailable; it sets no cookies and keeps no log of its own.</p>
+      <p>The provider is Cloudflare, Inc., <mark class="ph">[[CLOUDFLARE_ANSCHRIFT]]</mark>, USA. The legal basis is Article 6(1)(f) GDPR: our legitimate interest is that the services are reachable and protected from attacks. On the transfer to the USA, see <a href="#recipients">section 14</a>. One exception: <code>ssh.nuved.io</code> (git over SSH) connects you to our server directly, without Cloudflare.</p>
+    </section>
+
+    <section id="website">
+      <h2>4. When you visit nuved.io</h2>
+      <p>The nuved.io pages are static. They set no cookies, contain no JavaScript, and their fonts and images come from our own server. When you open them, your browser talks to nobody but Cloudflare and us.</p>
+      <h3>Server logs</h3>
+      <p>The web server that receives requests for our services writes one line per request: the time, your IP address (as Cloudflare passes it on), Cloudflare's request id, the method and address of the page requested, the response code, the bytes sent, the page you came from (referrer), your browser's identification (user agent) and the response time. We use these lines to find faults and to detect and fend off attacks (Article 6(1)(f) GDPR). They are deleted after <mark class="ph">[[LOG_FRIST]]</mark>; we build no profiles from them and combine them with no other data.</p>
+      <div class="review"><b>Review note:</b> There is no fixed period today. The lines go to Docker's container log, which rotates by size (3 files of 10 MB, measured on 7 October 2026); that day the oldest entry was from 16 September 2026, about three weeks. The same web server also serves the operator's other projects. Recommendation: set a fixed maximum (say 14 days) technically and name it here, or describe the criterion (Article 13(2)(a) GDPR).</div>
+    </section>
+
+    <section id="account">
+      <h2>5. Account and sign-in</h2>
+      <p>Sign-in and accounts run through our own sign-in service at auth.nuved.io (the open-source software authentik, on our server). At the moment an account can only be created by invitation.</p>
+      <ul>
+        <li><b>When you create it:</b> username, name, email address and password. We don't store the password in clear text, only a hash of it.</li>
+        <li><b>Optionally:</b> a second sign-in factor (authenticator app, passkey or recovery codes), if you set one up.</li>
+        <li><b>At every sign-in:</b> an event log with the time, your IP address, your browser's identification and the approximate location and network operator derived from them. That derivation happens on our server with a local database; nothing is sent to anyone.</li>
+      </ul>
+      <p>The purpose is to give you an account and sign you in securely (Article 6(1)(b) GDPR), and to detect misuse of the account (Article 6(1)(f) GDPR). Confirmation, invitation and password reset emails are sent through our own mail server (<a href="#mail">section 8</a>). auth.nuved.io does not offer signing in with a GitHub account.</p>
+      <p>Account and profile data stay until the account is deleted. Sign-in events are deleted after <mark class="ph">[[AUTHENTIK_EREIGNIS_FRIST]]</mark>.</p>
+      <div class="review"><b>Review note:</b> How long sign-in events are kept is a setting in authentik that was not read here; the default is a year as far as I recall (not re-checked). The console has no self-service way to delete one's own account today (checked in the code on 7 October 2026); deletion is on request.</div>
+    </section>
+
+    <section id="console">
+      <h2>6. Console, API and command line</h2>
+      <p>console.nuved.io, api.nuved.io and the <code>nuved</code> command line are one application on our server, with its own database. It stores what the service needs:</p>
+      <ul>
+        <li>your organization, its owner's email address, and its members with their role and the projects they may see;</li>
+        <li>invitations: the invited email address and who sent the invitation; if the invited person accepts and creates an organization of their own, we record the referral;</li>
+        <li>access tokens, only as a SHA-256 checksum, with their name and the email address of the person who created them; SSH keys for checking commit signatures, with the email address a signature carries;</li>
+        <li>projects, services and their addresses;</li>
+        <li>an activity log for your organization: who (a person, an agent or the system) did what, when, and with what result;</li>
+        <li>the balance, every entry (top-up, usage, credit) and the usage per project;</li>
+        <li>settings for balance alerts, and when the last alert was sent.</li>
+      </ul>
+      <p>The command line signs in through auth.nuved.io: you confirm a code in your browser. It sends no usage statistics.</p>
+      <p>The legal basis is our contract with you (Article 6(1)(b) GDPR). We send an invitation to another person because a member of your organization asks us to; the legitimate interest (Article 6(1)(f) GDPR) is that teams can work together. We keep accounting entries as long as tax and commercial law require (Article 6(1)(c) GDPR with § 147(1) no. 4 and (3) AO: eight years for accounting vouchers, <mark class="ph">[[HGB_FRIST_FALLS_KAUFMANN]]</mark>). Everything else stays as long as your organization exists and is deleted afterwards, unless a retention duty applies.</p>
+    </section>
+
+    <section id="payment">
+      <h2>7. Paying</h2>
+      <p>You top up your balance on Stripe's payment page (Stripe Checkout). You enter your card details there, not with us. We give Stripe the amount, your organization and your email address. Stripe gives us back a customer id, whether and when the payment arrived, the link to Stripe's receipt, and a fingerprint of the card. The fingerprint is an identifier the card number can't be derived from; we use it only to stop someone from earning a referral credit from themselves with the same card.</p>
+      <p>The provider is <mark class="ph">[[STRIPE_VERTRAGSPARTNER_UND_ANSCHRIFT]]</mark>. Stripe processes payment data partly on our behalf and partly as a controller in its own right, for example to prevent fraud and to meet its own legal duties; Stripe's privacy policy applies to that (<a href="https://stripe.com/privacy" rel="noopener">stripe.com/privacy</a>). The legal basis is our contract with you (Article 6(1)(b) GDPR); for comparing fingerprints, our legitimate interest in preventing misuse of credits (Article 6(1)(f) GDPR).</p>
+      <div class="review"><b>Review note:</b> During the preview Stripe runs in test mode; no real money moves. The contracting party for EEA accounts is, as I recall, Stripe Payments Europe, Limited (Ireland), not re-checked; please confirm the role split (processor / own controller) against Stripe's current contract documents.</div>
+    </section>
+
+    <section id="mail">
+      <h2>8. Email</h2>
+      <p>We send and receive email through our own mail server (Mailu, on a Hetzner server in Falkenstein). It sends invitations, confirmations, password reset links, balance alerts and the sign-in codes for guests of shares (<a href="#shares">section 9</a>). Mail is sent from auth@nuved.io; guests' sign-in codes currently come from auth@fromnovid.com. The logo in our emails is loaded from nuved.io at an address that is the same for every recipient, so we don't measure who opened an email. If your mail program loads images, Cloudflare and our server log see your IP address when it does (<a href="#website">section 4</a>). The emails with guest codes load nothing.</p>
+      <p>If you write to us, we process your address and your message in order to reply (Article 6(1)(b) or (f) GDPR). We delete them when the matter is settled, at the latest after <mark class="ph">[[MAIL_FRIST]]</mark>, unless a retention duty applies (for business letters, § 147(1) nos. 2 and 3 and (3) AO: six years).</p>
+    </section>
+
+    <section id="shares">
+      <h2>9. Shares and guests</h2>
+      <p>With a share, someone makes a service on their own computer reachable at an address <code>&lt;organization&gt;-&lt;name&gt;.fromnovid.com</code>. The traffic goes through our relay.</p>
+      <h3>When you share something</h3>
+      <p>The relay stores your organization, your computer's public key and internal address, when it last connected, which shares it offers and, per day and share, how many requests and bytes it had. The purpose is to run the share and to apply your plan's traffic limits (Article 6(1)(b) GDPR).</p>
+      <h3>When you are invited as a guest</h3>
+      <p>The person who runs a share decides who may open it, and enters email addresses for that. When you open the share, you enter your address and receive a code by email. The relay stores:</p>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>What</th><th>Holds your address?</th><th>Until when</th></tr></thead>
+          <tbody>
+            <tr><td>the entry on the invite list (when added, when last used)</td><td>yes</td><td>until the person removes it, the share's address lapses, it goes unused for 90 days, or you opt out or report the invitation</td></tr>
+            <tr><td>the sign-in code, only as a SHA-256 checksum</td><td>yes</td><td>a day at most</td></tr>
+            <tr><td>requests and bytes per day</td><td>yes</td><td>until you are no longer a guest; then folded together without your address</td></tr>
+            <tr><td>"no more codes to me" and "I don't know this person"</td><td>no, only as a keyed checksum (HMAC-SHA256)</td><td>until you ask for it to be lifted; a report counts towards a pause for 30 days</td></tr>
+            <tr><td>technical records of when an address was added or removed</td><td>no, only as a keyed checksum</td><td>one to 30 days</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>After sign-in, the relay sets a cookie that keeps you signed in to that one share for 30 days (<a href="#cookies">section 15</a>). Every email with a code carries a link to stop further codes, or to report that you don't know the person who invited you.</p>
+      <p>The relay passes your request, including your IP address, on to the shared service. What that service does with it is the responsibility of the person who runs it, not of nuved.</p>
+      <p>The legal basis is our legitimate interest, and that of the person sharing, in limiting access to the share to invited people, and yours in not being written to unasked (Article 6(1)(f) GDPR).</p>
+      <div class="review"><b>Review note:</b> The role split is open: is nuved a controller in its own right for guest data, a processor for the person sharing (Article 28 GDPR), or a joint controller (Article 26)? The text above treats nuved as its own controller. The visit list in the plan ("who opened it", 90 days) is not built and so not described here; it needs its own paragraph before it launches. For a sharer's (not a guest's) per-day counts, no deletion period was found in the code.</div>
+    </section>
+
+    <section id="code">
+      <h2>10. Code and GitHub</h2>
+      <p>Projects that run on nuved live in our own git service (git.nuved.io, ssh.nuved.io). With the code we store what git records for every commit, including the author's name and email address.</p>
+      <p>If you connect a project to a GitHub repository, we create a key for it that you add on GitHub, and from then on copy every state of <code>main</code> to that repository. That happens on your instruction (Article 6(1)(b) GDPR); at GitHub the code then sits in your account, under your contract with GitHub.</p>
+    </section>
+
+    <section id="projects">
+      <h2>11. Projects on nuved.app</h2>
+      <p>If you run a service of your own on nuved, at <code>&lt;service&gt;-&lt;project&gt;.nuved.app</code>, that service processes data about its own users. You are responsible for that; we process that data only on your behalf, under a data processing agreement (Article 28 GDPR) that you conclude <mark class="ph">[[AVV_ORT]]</mark>.</p>
+      <div class="review"><b>Review note:</b> Hosting customer projects is not offered today (the console refuses to create one; checked in plans-backend deploy/hetzner/README.md). This section belongs on the page only once it is offered and a DPA with technical and organisational measures exists.</div>
+    </section>
+
+    <section id="traces">
+      <h2>12. Debugging</h2>
+      <p>The console and the relay write technical traces to a tool on our own server (Jaeger). A trace holds: a request's method, route and response code, its duration, the name of the organization and the service, the kind of email sent, and the outcome. It never holds email addresses, IP addresses, browser identification, full addresses or content: anything not on a fixed list of allowed fields is dropped before it leaves the service. Of the traffic through shares, only about one request in a hundred is traced. Traces are deleted after seven days. The legal basis is our legitimate interest in finding faults and keeping the services stable (Article 6(1)(f) GDPR).</p>
+    </section>
+
+    <section id="backups">
+      <h2>13. Backups</h2>
+      <p>Once a day we back up the databases of the console, the sign-in service, the relay and the git service, so that nothing is lost after a failure (Article 6(1)(f) GDPR, Article 32 GDPR).</p>
+      <ul>
+        <li><b>Amazon Web Services (S3), Frankfurt region.</b> The last three daily backups per service; a replaced backup is deleted a day later. Relay and git service backups are encrypted with our own keys before upload; the console's and the sign-in service's <mark class="ph">[[S3_VERSCHLUESSELUNG_KONSOLE_AUTHENTIK]]</mark>. The provider is <mark class="ph">[[AWS_VERTRAGSPARTNER_UND_ANSCHRIFT]]</mark>.</li>
+        <li><b>GitHub, private repository.</b> A third copy of the last three days, encrypted with keys only we hold; GitHub can't read it. The provider is GitHub, Inc., <mark class="ph">[[GITHUB_ANSCHRIFT]]</mark>, USA.</li>
+        <li><b>On our server.</b> The relay also keeps its last seven backups.</li>
+      </ul>
+      <div class="review"><b>Review note:</b> As of 7 October 2026 (read in platform-cluster backup-github/README.md): the console's and the sign-in service's backups sit in S3 with AWS's server-side encryption only (SSE-S3), not with our own keys; AWS could technically read them. Either change the setup (age before upload, as for the relay) or keep the text as it stands and assess the transfer accordingly. Under <code>aws-teardown/</code> there is also a final copy of the former AWS environment (the console, git service and LiteLLM databases and the customers' git repositories, as of 6 October 2026) with no deletion period.</div>
+    </section>
+
+    <section id="recipients">
+      <h2>14. Recipients and transfers outside the EU</h2>
+      <p>We pass personal data only to the following providers, as far as each purpose needs. Where a provider acts on our behalf, a data processing agreement under Article 28 GDPR is in place.</p>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Recipient</th><th>For</th><th>Where</th><th>Basis for a transfer outside the EU</th></tr></thead>
+          <tbody>
+            <tr><td>Hetzner Online GmbH</td><td>servers, storage, network</td><td>Germany (Nuremberg, Falkenstein)</td><td>no transfer</td></tr>
+            <tr><td>Cloudflare, Inc.</td><td>passing on and protecting every web address, DNS</td><td>global network, seat in the USA</td><td>adequacy decision on the EU-US Data Privacy Framework (Implementing Decision (EU) 2023/1795, Article 45 GDPR), where certified; also standard contractual clauses (Article 46(2)(c) GDPR) <mark class="ph">[[PRUEFEN]]</mark></td></tr>
+            <tr><td>Stripe</td><td>payments</td><td><mark class="ph">[[STRIPE_ORT]]</mark></td><td>Data Privacy Framework (Stripe, LLC) and standard contractual clauses <mark class="ph">[[PRUEFEN]]</mark></td></tr>
+            <tr><td>Amazon Web Services</td><td>backups</td><td>Frankfurt region (eu-central-1); parent company in the USA</td><td>Data Privacy Framework and standard contractual clauses <mark class="ph">[[PRUEFEN]]</mark></td></tr>
+            <tr><td>GitHub, Inc.</td><td>encrypted third backup copy</td><td>USA</td><td>Data Privacy Framework <mark class="ph">[[PRUEFEN]]</mark>; the data is encrypted with keys only we hold</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>You can get a copy of the safeguards by writing to <mark class="ph">[[DATENSCHUTZ_EMAIL]]</mark>.</p>
+      <div class="review"><b>Review note:</b> Check each provider's certification on dataprivacyframework.gov and record the date; here it is taken from provider documents and secondary sources (7 October 2026). The EU General Court dismissed the action against Decision 2023/1795 on 3 September 2025 (T-553/23, Latombe); per a secondary source an appeal is pending (C-703/25 P, not checked on curia.europa.eu). Whether the encrypted copy at GitHub is personal data from GitHub's side at all is a matter of assessment.</div>
+    </section>
+
+    <section id="cookies">
+      <h2>15. Cookies</h2>
+      <p>nuved.io sets no cookies. The console, the sign-in service and shares set only the cookies that signing in can't work without. They need no consent (§ 25(2) no. 2 TDDDG). None of them is for advertising or analytics, and none is passed to anyone.</p>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Name</th><th>Where</th><th>For</th><th>Lifetime</th></tr></thead>
+          <tbody>
+            <tr><td><code>__Host-nuved_session</code></td><td>console.nuved.io, api.nuved.io</td><td>keeps you signed in</td><td>30 days</td></tr>
+            <tr><td><code>__Host-nuved_id_token</code></td><td>console.nuved.io, api.nuved.io</td><td>signs you out of the sign-in service too when you sign out</td><td>30 days</td></tr>
+            <tr><td><code>__Host-nuved_oidc</code></td><td>console.nuved.io, api.nuved.io</td><td>protects a sign-in in progress</td><td>10 minutes</td></tr>
+            <tr><td><code>__Host-nuved_signin</code></td><td>console.nuved.io, api.nuved.io</td><td>receipt for a sign-in just completed</td><td>5 minutes</td></tr>
+            <tr><td><code>authentik_session</code></td><td>auth.nuved.io</td><td>your session with the sign-in service</td><td><mark class="ph">[[AUTHENTIK_SITZUNGSDAUER]]</mark></td></tr>
+            <tr><td><code>_share_session</code></td><td>the share's own address</td><td>keeps a guest signed in to that one share; holds the email address, signed</td><td>30 days</td></tr>
+            <tr><td><code>_share_login</code></td><td>the share's own address</td><td>ties the sign-in form to your browser</td><td>10 minutes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="review"><b>Review note:</b> Names and lifetimes read in the code (plans-backend, mansoor-tunnel, 7 October 2026); <code>authentik_session</code> observed when the sign-in flow starts, with no expiry before sign-in; its lifetime after sign-in depends on the login stage's setting (not read). Whether Cloudflare sets cookies of its own depending on zone settings (for bot detection, say) was not checked in the settings; on two test requests on 7 October 2026 Cloudflare set none.</div>
+    </section>
+
+    <section id="retention">
+      <h2>16. How long we keep data</h2>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Data</th><th>How long</th></tr></thead>
+          <tbody>
+            <tr><td>server logs</td><td><mark class="ph">[[LOG_FRIST]]</mark></td></tr>
+            <tr><td>account, organization, members, projects, activity log</td><td>as long as the organization exists</td></tr>
+            <tr><td>accounting entries and receipts</td><td>eight years under § 147(3) AO, <mark class="ph">[[HGB_FRIST_FALLS_KAUFMANN]]</mark></td></tr>
+            <tr><td>sign-in events</td><td><mark class="ph">[[AUTHENTIK_EREIGNIS_FRIST]]</mark></td></tr>
+            <tr><td>guest data of shares</td><td>see the table in <a href="#shares">section 9</a></td></tr>
+            <tr><td>traces</td><td>seven days</td></tr>
+            <tr><td>backups</td><td>four days at most (S3), three days (GitHub), seven backups (relay, on our server)</td></tr>
+            <tr><td>email to us</td><td><mark class="ph">[[MAIL_FRIST]]</mark></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="rights">
+      <h2>17. Your rights</h2>
+      <p>You have the right of access (Article 15 GDPR), rectification (Article 16), erasure (Article 17), restriction of processing (Article 18), data portability (Article 20) and to object (Article 21). You can withdraw any consent you gave at any time, for the future (Article 7(3)). Write to <mark class="ph">[[DATENSCHUTZ_EMAIL]]</mark>.</p>
+      <div class="note">
+        <h3 style="margin-top:0">Right to object</h3>
+        <p>Where we process data on the basis of Article 6(1)(f) GDPR, you can object at any time on grounds relating to your particular situation (Article 21(1) GDPR). We then stop, unless we demonstrate compelling legitimate grounds that override your interests, or the processing serves the establishment, exercise or defence of legal claims.</p>
+      </div>
+      <p>You can lodge a complaint with a data protection supervisory authority (Article 77 GDPR), in particular in the Member State where you live or work or where the alleged infringement took place, or with the authority responsible for us: <mark class="ph">[[AUFSICHTSBEHOERDE_NAME_ANSCHRIFT]]</mark>.</p>
+    </section>
+
+    <section id="other">
+      <h2>18. Required data and changes</h2>
+      <p>For an account we need your email address; without it we can neither sign you in nor reach you. For a top-up we need what Stripe asks for to take the payment. Everything else is voluntary.</p>
+      <p>We make no decisions based solely on automated processing that produce legal effects concerning you or similarly significantly affect you (Article 22 GDPR).</p>
+      <div class="review"><b>Review note:</b> Two things happen automatically: a referral credit is refused when both sides paid with the same card, and services pause when the balance reaches zero. Neither should be a significant effect under Article 22; please confirm.</div>
+      <p>When the services or the law change, we update this policy. The version published here applies.</p>
+      <p>As of: <mark class="ph">[[DATUM_DER_VEROEFFENTLICHUNG]]</mark></p>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <ul>
+      <li><a href="/">Homepage</a></li>
+      <li><a href="/en/impressum.html">Legal notice</a></li>
+      <li><a href="/en/datenschutz.html">Privacy</a></li>
+      <li><a href="/datenschutz.html" hreflang="de" lang="de">Datenschutz (Deutsch)</a></li>
+    </ul>
+    <p>Draft as of 7 October 2026.</p>
+  </div>
+</footer>
+
+</body>
+</html>
