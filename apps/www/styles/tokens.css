@@ -1,0 +1,236 @@
+/* nuved design tokens v2: Geist on white (from the operator's DESIGN-vercel.md, 2026-10-25).
+   Same token names as design/tokens.css in plans-backend and nuved-desktop, so the Tailwind theme,
+   the shadcn components and every screen keep their class names; only the values change.
+   Light is the default (Vercel is light first). data-theme="dark" on <html> or any element pins dark;
+   without it the system preference picks. A media query cannot read a variable, so the phone values
+   repeat breakpoint.sm (600px).
+
+   Changes against v1, in words: one near-black ink carries text, the primary button, the selected
+   thing and the focus ring's companion; the hairline (#ebebeb) separates everything; blue is for links
+   and the focus ring only; state colours are words first; the agent mark is the one violet; the mesh
+   gradient of Vercel's hero exists only on the homepage hero, never in a product screen.
+
+   2026-10-26, the build (T-20261025-07): design/tokens.json took these values and this file took
+   back what the build changed, so the record and tokens.json agree (notes-build.md maps every name):
+   radius names by role, 2026-10-26 brain ruling (s and m 6px, l 12px for cards, xl 16px for dialogs
+   and sheets; the mocks moved their cards from radius-m to radius-l, so they draw as before);
+   line-control #878787 (#8f8f8f was 2.89:1 on sunken, where fields sit); term-add-word and
+   term-del-word are the backgrounds behind changed words in a diff, as the console draws them;
+   the column widths of review fix 8; breakpoint lg and wide stay the console's 1100 and 1280;
+   the phone block restates the console's phone layout; shadow-float is in tokens.json too
+   (shadow.float), for the Mac's menus and sheet; no console page uses it. */
+
+:root {
+  --font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 600;             /* Geist's weight is binary: 600 for headings, 500 for labels */
+  --text-xs: 12px;
+  --text-s: 14px;
+  --text-m: 16px;
+  --text-l: 20px;
+  --text-xl: 24px;
+  --text-2xl: 32px;
+  --text-3xl: 40px;
+  --text-4xl: 48px;
+  --text-5xl: 56px;
+  --leading-body: 1.5;
+  --leading-tight: 1.2;
+  --leading-log: 24px;
+  --tracking-tight: -0.02em;           /* headings from text-l up */
+  --tracking-tighter: -0.04em;         /* display: 2xl and up; Geist is set tight at size */
+  --tracking-label: 0;                 /* no letter-spacing play on labels; mono eyebrows stay at 0 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-unit: 4px;
+  --size-target: 40px;
+  --size-target-nav: 36px;
+  --size-chip: 24px;
+  --size-check: 24px;
+  --size-pip: 8px;
+  --size-swatch: 12px;
+  --size-meter: 8px;
+  --size-border: 1px;
+  --size-border-strong: 2px;
+  --size-step: 3px;
+  --size-focus: 2px;
+  --size-log-time: 80px;
+  --size-log-source: 136px;
+  --size-log-level: 56px;
+  --size-activity-when: 64px;
+  --size-col-id: 64px;                 /* a data table's id column: review fix 8 */
+  --size-col-status: 120px;            /* its status column: the widest pill with room */
+  --size-col-updated: 104px;           /* its updated or published column */
+  --size-gutter: 40px;
+  --size-sidebar: 232px;
+  --size-dialog: 480px;
+  --size-page: 1240px;
+  --size-site: 1120px;
+  --size-measure: 60ch;
+  --size-org: 32px;
+  --size-org-max: 120px;
+  --size-palette: 560px;
+  --size-palette-list: 360px;
+  --size-palette-input: 48px;
+  --size-drawer: 300px;
+  --size-chart: 152px;
+  --size-chart-axis: 56px;
+  --size-field-short: 72px;
+  --size-step-mark: 20px;
+  --size-people-projects: 166px;
+  /* radius names by role, 2026-10-26 brain ruling: the console's names keep their roles */
+  --radius-s: 6px;                     /* small parts: kbd, swatches, bars, skeleton bones */
+  --radius-m: 6px;                     /* controls: buttons, inputs, chips, nav rows */
+  --radius-l: 12px;                    /* cards, code blocks, the drawer's inner panels */
+  --radius-xl: 16px;                   /* dialogs and sheets, the one large panel */
+  --radius-pill: 999px;                /* pills and the avatar */
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --breakpoint-sm: 600px;
+  --breakpoint-stack: 720px;
+  --breakpoint-md: 900px;
+  --breakpoint-lg: 1100px;             /* the console's: layout is not the look's */
+  --breakpoint-wide: 1280px;
+
+  /* colour, light (the default) */
+  --color-ground: #fafafa;             /* the canvas */
+  --color-surface: #ffffff;            /* cards, the drawer, inputs, code */
+  --color-sunken: #f2f2f2;             /* the sidebar's selected row's ground, wells, skeletons */
+  --color-ghost: #f2f2f2;              /* idle pill and the ghost button under the pointer */
+  --color-line: #ebebeb;               /* the hairline: every edge */
+  --color-line-faint: #f2f2f2;         /* between rows inside a surface */
+  --color-line-control: #878787;       /* names a field or button: 3.2:1 on sunken, 3.6:1 on white (Vercel's #ebebeb fails the floor; #8f8f8f was 2.9:1 on sunken) */
+  --color-text: #171717;               /* ink */
+  --color-text-dim: #666666;           /* captions, labels, secondary facts: 5.7:1 on white */
+  --color-brand: #171717;              /* the primary button, the selected thing: ink, as Vercel's "Deploy" */
+  --color-brand-hover: #383838;
+  --color-on-brand: #ffffff;
+  --color-brand-soft: #f2f2f2;         /* selected nav row, selected list row */
+  --color-link: #0761d1;               /* links: Vercel's link-deep, 5.2:1 on white (#0070f3 is 4.0:1) */
+  --color-link-hover: #0a4fa3;
+  --color-focus: #0070f3;              /* the focus ring, 2px outside: a component, 3:1 is enough */
+  --color-ok: #087443;                 /* a word in green, 5.8:1 on white */
+  --color-ok-bg: #e6f6ec;
+  --color-warn: #ab570a;               /* Vercel's warning-deep, 4.6:1 on white */
+  --color-warn-bg: #ffefcf;            /* Vercel's warning-soft */
+  --color-bad: #c50000;                /* Vercel's error-deep, 5.9:1 on white */
+  --color-bad-bg: #fde8e8;
+  --color-agent: #6b21a8;              /* the one violet: an agent's name, a build; 7.1:1 on white */
+  --color-agent-bg: #efe7fa;
+  --color-term-bg: #ffffff;
+  --color-term-text: #171717;
+  --color-term-dim: #666666;
+  --color-term-source: #0761d1;
+  --color-term-prompt: #6b21a8;
+  --color-term-ok: #087443;
+  --color-term-warn: #ab570a;
+  --color-term-bad: #c50000;
+  --color-term-err-bg: #fde8e8;
+  --color-term-err-text: #c50000;
+  --color-term-add-bg: #e6f6ec;
+  --color-term-add-word: #badcca;      /* behind the changed words of an added line: term-add-bg with a fifth of ok */
+  --color-term-del-bg: #fde8e8;
+  --color-term-del-word: #f5c5c5;      /* behind the changed words of a removed line */
+  --color-chart-1: #171717;
+  --color-chart-2: #0761d1;
+  --color-chart-3: #6b21a8;
+  --color-chart-4: #0f766e;
+  --color-chart-5: #ab570a;
+  --color-chart-6: #be185d;
+  --color-chart-forecast: #8a8a8a;           /* 3.3:1 on the canvas: a chart mark needs 3:1 */
+  --color-scrim: rgba(0, 0, 0, 0.4);
+  --shadow-float: 0 2px 2px rgba(0,0,0,0.04), 0 8px 16px -4px rgba(0,0,0,0.10); /* level 2 only: menus, popovers, the Mac sheet */
+  color-scheme: light;
+}
+
+/* colour, dark (Geist's dark: black canvas, #ededed ink, hairline #2e2e2e). The same roles. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-ground: #000000;
+    --color-surface: #0a0a0a;
+    --color-sunken: #111111;
+    --color-ghost: #1a1a1a;
+    --color-line: #2e2e2e;
+    --color-line-faint: #1f1f1f;
+    --color-line-control: #707070;
+    --color-text: #ededed;
+    --color-text-dim: #a1a1a1;
+    --color-brand: #ededed;
+    --color-brand-hover: #cccccc;
+    --color-on-brand: #0a0a0a;
+    --color-brand-soft: #1a1a1a;
+    --color-link: #52a8ff;
+    --color-link-hover: #7fc0ff;
+    --color-focus: #52a8ff;
+    --color-ok: #4ade80;
+    --color-ok-bg: #0f2a1a;
+    --color-warn: #f5a623;
+    --color-warn-bg: #2d1f08;
+    --color-bad: #ff6166;
+    --color-bad-bg: #2d0c0e;
+    --color-agent: #c4a5f5;
+    --color-agent-bg: #221533;
+    --color-term-bg: #0a0a0a;
+    --color-term-text: #ededed;
+    --color-term-dim: #a1a1a1;
+    --color-term-source: #52a8ff;
+    --color-term-prompt: #c4a5f5;
+    --color-term-ok: #4ade80;
+    --color-term-warn: #f5a623;
+    --color-term-bad: #ff6166;
+    --color-term-err-bg: #2d0c0e;
+    --color-term-err-text: #ff6166;
+    --color-term-add-bg: #0f2a1a;
+    --color-term-add-word: #1d4a2d;
+    --color-term-del-bg: #2d0c0e;
+    --color-term-del-word: #542426;
+    --color-chart-1: #ededed;
+    --color-chart-2: #52a8ff;
+    --color-chart-3: #c4a5f5;
+    --color-chart-4: #2dd4bf;
+    --color-chart-5: #f5a623;
+    --color-chart-6: #f472b6;
+    --color-chart-forecast: #707070;
+    --color-scrim: rgba(0, 0, 0, 0.6);
+    --shadow-float: 0 0 0 1px #2e2e2e, 0 8px 16px -4px rgba(0,0,0,0.6);
+    color-scheme: dark;
+  }
+}
+[data-theme="dark"] {
+  --color-ground: #000000; --color-surface: #0a0a0a; --color-sunken: #111111; --color-ghost: #1a1a1a;
+  --color-line: #2e2e2e; --color-line-faint: #1f1f1f; --color-line-control: #707070;
+  --color-text: #ededed; --color-text-dim: #a1a1a1;
+  --color-brand: #ededed; --color-brand-hover: #cccccc; --color-on-brand: #0a0a0a; --color-brand-soft: #1a1a1a;
+  --color-link: #52a8ff; --color-link-hover: #7fc0ff; --color-focus: #52a8ff;
+  --color-ok: #4ade80; --color-ok-bg: #0f2a1a; --color-warn: #f5a623; --color-warn-bg: #2d1f08; --color-bad: #ff6166; --color-bad-bg: #2d0c0e;
+  --color-agent: #c4a5f5; --color-agent-bg: #221533;
+  --color-term-bg: #0a0a0a; --color-term-text: #ededed; --color-term-dim: #a1a1a1; --color-term-source: #52a8ff; --color-term-prompt: #c4a5f5;
+  --color-term-ok: #4ade80; --color-term-warn: #f5a623; --color-term-bad: #ff6166; --color-term-err-bg: #2d0c0e; --color-term-err-text: #ff6166;
+  --color-term-add-bg: #0f2a1a; --color-term-add-word: #1d4a2d; --color-term-del-bg: #2d0c0e; --color-term-del-word: #542426;
+  --color-chart-1: #ededed; --color-chart-2: #52a8ff; --color-chart-3: #c4a5f5; --color-chart-4: #2dd4bf; --color-chart-5: #f5a623; --color-chart-6: #f472b6; --color-chart-forecast: #707070;
+  --color-scrim: rgba(0, 0, 0, 0.6); --shadow-float: 0 0 0 1px #2e2e2e, 0 8px 16px -4px rgba(0,0,0,0.6);
+  color-scheme: dark;
+}
+
+/* phones: the ux floor's 16px body and 44px targets */
+@media (width < 600px) {
+  :root { --text-xs: 14px; --text-s: 16px; --size-target: 44px; --size-target-nav: 44px; --size-gutter: 16px; --size-chart-axis: 48px; --size-field-short: 88px; }
+}
+
+/* the two faces, variable, self-hosted (SIL OFL 1.1, Vercel + basement.studio) */
+@font-face { font-family: "Geist"; src: url(../Geist-Variable.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url(../GeistMono-Variable.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }

@@ -6,7 +6,7 @@ admission, the same validation gate in CI, and the same shared Gateway as
 `apps/api`.
 
 ```
-*.html, *.woff2  ──render.sh──►  configmap.yaml  ──Argo CD──►  nuved-www
+*.html, styles/tokens.css, *.woff2  ──render.sh──►  configmap.yaml  ──Argo CD──►  nuved-www
                                                                  nginx-unprivileged
 ```
 
@@ -32,16 +32,21 @@ either absent or carries a visible mark.
 |---|---|
 | `index.html` | homepage. **Source of truth.** |
 | `how-it-works.html` | the technical page. **Source of truth.** |
-| `render.sh` | regenerates `configmap.yaml` from the pages and the fonts. |
+| `render.sh` | regenerates `configmap.yaml` from the pages, the tokens and the fonts. |
 | `configmap.yaml` | **generated — never hand-edit.** |
 | `www.yaml` | Deployment, Service, HTTPRoute. |
-| `schibsted-grotesk.woff2` | display and body face, variable 400–700, latin subset. |
-| `ibm-plex-mono-400.woff2`, `ibm-plex-mono-500.woff2` | the terminal and the numbers. |
+| `styles/tokens.css` | the design tokens: the console's file under the console's names (plans-backend `design/v2/tokens-v2.css`), the two font URLs excepted. render.sh writes it into each page. |
+| `Geist-Variable.woff2` | Geist Sans, every word; variable 100–900. |
+| `GeistMono-Variable.woff2` | Geist Mono, the terminal, the money and every figure a machine produced; variable 100–900. |
+| `tools/www-shots/shots.cjs` | shoots every page at 1440×900 and 390×844 in light and dark from `configmap.yaml`, and measures contrast, targets, overflow, fonts and gradients. |
+| `shots/`, `notes-v2.md` | the shots of design v2 and what they showed. |
 | `robots.txt` | lets every crawler in. Rendered into the ConfigMap like a page. |
 | `hetzner/` | the site on the Hetzner box: `compose.yml`, `deploy.sh`, `unpack.py`. |
 
-Both pages carry their own inline CSS and no JavaScript, and the favicon is a
-data URI. The only subresource requests either page makes are the three fonts,
+Every page carries its own inline CSS and no JavaScript, and the favicon is a
+data URI. The tokens are inline too: a ConfigMap key cannot hold a `/`, so
+`styles/tokens.css` is never served, and `render.sh` replaces each page's
+`<link>` to it with its text. The only subresource requests a page makes are the two fonts,
 and those are served from this origin — opening the page contacts nobody but us.
 
 ## Changing a page
@@ -49,8 +54,19 @@ and those are served from this origin — opening the page contacts nobody but u
 ```sh
 $EDITOR index.html            # or how-it-works.html
 ./render.sh                   # regenerate configmap.yaml, prints the sizes
+./render_test.sh              # the rates, the inlined tokens, no literals in page CSS
 ../../scripts/validate.sh apps
 git commit -am "..." && git push
+```
+
+The pages take every value from `styles/tokens.css`; a hex colour or a px length
+in a page's `<style>` outside an `@media` condition fails `render_test.sh`. When
+the console's tokens change, copy its file over `styles/tokens.css` and put the two
+font URLs back to `url(../Geist-Variable.woff2)` and `url(../GeistMono-Variable.woff2)`.
+To see a change, shoot it (Playwright from plans-backend/web; nothing is fetched):
+
+```sh
+cd ~/claude/plans-backend/web && node <repo>/apps/www/tools/www-shots/shots.cjs <repo>/apps/www <out-dir>
 ```
 
 Commit the page and the ConfigMap together. Every key in the ConfigMap becomes a
@@ -65,10 +81,12 @@ prints these on every run and refuses to write a ConfigMap over the cap:
 
 | | bytes |
 |---|--:|
-| `index.html` | 26,025 |
-| `how-it-works.html` | 19,042 |
-| the three fonts | 66,976 |
-| `configmap.yaml` | 138,176 |
+| `index.html` | 31,751 |
+| `how-it-works.html` | 21,613 |
+| `features.html` | 14,443 |
+| `styles/tokens.css`, inlined into each of the three | 11,298 |
+| the two fonts | 114,848 |
+| `configmap.yaml` | 262,225 |
 
 ## On the Hetzner box (since 2026-10-07)
 
@@ -94,18 +112,19 @@ The first install needs the directory: `sudo install -d -o deploy -g deploy -m 7
 
 ## The fonts
 
-Schibsted Grotesk (Ellmer Type) and IBM Plex Mono (IBM), both SIL Open Font
-License 1.1, which permits redistribution. They are checked in as latin-subset
-`.woff2` files taken from the Google Fonts CDN and **served from this origin**.
+Geist Sans and Geist Mono (Vercel with basement.studio), both SIL Open Font
+License 1.1, which permits redistribution: the console's two faces since design
+v2 (plans-backend `design/v2/`). They are checked in as the same variable
+`.woff2` files the console serves and are **served from this origin**.
 
 That is a deliberate choice, not an oversight: linking `fonts.googleapis.com`
 would send every visitor's IP address to Google before they have agreed to
 anything, which is the exact arrangement a German court has already treated as a
 GDPR violation (LG München I, 20 January 2022, 3 O 17493/20). Self-hosting costs
-67 KB and settles the question.
+112 KiB and settles the question.
 
-Schibsted Grotesk is a variable font, so one file covers weights 400 through 700.
-The fonts live in the ConfigMap's `binaryData`, base64 on one line each, because
+Both are variable fonts, so one file each covers every weight the pages use (400,
+500 and 600). The fonts live in the ConfigMap's `binaryData`, base64 on one line each, because
 Kubernetes decodes `binaryData` with StdEncoding and a wrapped block scalar's
 newlines would not decode.
 
