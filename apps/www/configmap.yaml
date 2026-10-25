@@ -1161,10 +1161,10 @@ data:
                 <li><span class="node">Gateway</span><span class="hop">&rarr;</span></li>
                 <li><span class="node wall">your Service</span></li>
               </ul>
-              <figcaption>One shared Gateway, no cloud load balancer. Cloudflare proxies <code>*.nuved.io</code> to the node's fixed address, and the Gateway routes by hostname. Expose on a console service row, or <code>POST /v1/projects/{name}/services/{service}/expose</code>, and the platform writes that HTTPRoute for you: <code>&lt;service&gt;-&lt;org&gt;.nuved.io</code> for your first project, <code>&lt;service&gt;-&lt;org&gt;-&lt;project&gt;.nuved.io</code> for the rest. A hostname nobody claimed gets a 404 from the Gateway. The default-deny NetworkPolicy drops every other way in.</figcaption>
+              <figcaption>One shared Gateway, no cloud load balancer. Cloudflare proxies <code>*.nuved.app</code> to the node's fixed address, and the Gateway routes by hostname. Expose on a console service row, or <code>POST /v1/projects/{name}/services/{service}/expose</code>, and the platform writes that HTTPRoute for you: <code>&lt;service&gt;-&lt;org&gt;.nuved.app</code> for your first project, <code>&lt;service&gt;-&lt;org&gt;-&lt;project&gt;.nuved.app</code> for the rest. A hostname nobody claimed gets a 404 from the Gateway. The default-deny NetworkPolicy drops every other way in.</figcaption>
             </figure>
           </div>
-          <p class="kicker after">This page is one of those Services. It is deployed from <code>apps/www</code> in the public manifests repo by Argo CD, into a namespace with the same quota, the same policies and the same Gateway as a customer's — no exception for being ours.</p>
+          <p class="kicker after">This page is built from <code>apps/www</code> in the public manifests repo. It runs on the console's machine, in its own read-only container.</p>
         </section>
     
         <section id="enforced">
@@ -1181,10 +1181,8 @@ data:
             <li><span>No privileged containers, no host network, host PID or host IPC</span><span class="where">Kyverno admission</span></li>
             <li><span>Non-root only, no privilege escalation, all capabilities dropped, seccomp on, no hostPath, no hostPort</span><span class="where">Kyverno admission</span></li>
             <li><span>No PodDisruptionBudget that blocks every eviction and would stall a node drain</span><span class="where">Kyverno admission</span></li>
-            <li><span>An Argo AppProject per platform workspace, locked to that namespace, this repo, and five resource kinds</span><span class="where">Argo CD</span></li>
             <li><span>kubeconform plus those same Kyverno policies on every pull request, so the answer arrives before the merge</span><span class="where">CI gate</span></li>
             <li><span>Your balance is the ceiling: at zero the meter pauses every service and a top-up restores the replica counts it wrote down</span><span class="where">plans-backend</span></li>
-            <li><span>No static AWS keys anywhere in the cluster: service accounts assume roles through the cluster's own OIDC issuer</span><span class="where">IRSA</span></li>
           </ul>
         </section>
     
@@ -1193,7 +1191,7 @@ data:
           <div class="note warn">
             <h3>One machine, one engineer, invitation only</h3>
             <ul>
-              <li><b>One node.</b> The whole platform, this page included, runs on a single small AWS machine managed by kops. There is no high availability: when that node restarts, everything on it goes down with it.</li>
+              <li><b>One machine.</b> The console, the API and this page run with docker compose on one Hetzner machine in Germany. There is no high availability: when that machine restarts, everything on it goes down with it.</li>
               <li><b>Stripe is in test mode.</b> Nothing is charged. Balances, the ledger and the hourly meter are real code doing real arithmetic against a test-mode payment.</li>
               <li><b>No undo yet.</b> There is no trash and no nightly snapshot, so deleting something inside a project is final. Give an agent a project you could afford to lose.</li>
               <li><b>No build service.</b> You bring a container image. Building one from a folder is the next thing being built, not something that works today.</li>
@@ -1216,7 +1214,7 @@ data:
           <li><a href="https://github.com/nuved/platform-gitops">Source on GitHub</a></li>
           <li><a href="mailto:hello@nuved.io?subject=Invitation%20to%20the%20Nuved%20preview">Request an invitation</a></li>
         </ul>
-        <p>Preview, built and operated by one engineer. This page is served from the platform itself, deployed from <code>apps/www</code> by Argo CD.</p>
+        <p>Preview, built and operated by one engineer. This page runs on the console's machine, built from <code>apps/www</code>.</p>
       </div>
     </footer>
     
@@ -1229,7 +1227,7 @@ data:
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Everything Nuved does</title>
-    <meta name="description" content="What actually runs behind a Nuved project: who signs you in, what a top-up creates, how an agent token reaches one namespace and nothing else, and which rules the cluster refuses to break.">
+    <meta name="description" content="Every Nuved feature you can use today and where to find it, with what is still being built listed apart.">
     <meta name="color-scheme" content="light dark">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B5563'/%3E%3Cpath d='M9 23V9l14 14V9' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='square'/%3E%3C/svg%3E">
     <style>
@@ -1611,7 +1609,7 @@ data:
           <h2>Money</h2>
           <ul class="enforced">
             <li><span>Top up by card through Stripe (test mode during the preview)</span><span class="where">console</span></li>
-            <li><span>Charged by the hour for what each project reserves, at rates derived daily from our AWS bill</span><span class="where">console, API</span></li>
+            <li><span>Charged by the hour for what each project reserves, at rates derived from our real AWS bill of September 2026</span><span class="where">console, API</span></li>
             <li><span>At zero, services pause and nothing is deleted; a top-up brings them back as they were</span><span class="where">automatic</span></li>
           </ul>
         </section>
@@ -1655,7 +1653,6 @@ data:
           <p class="kicker">Not live yet. Listed so you know what is coming, not as a promise of a date.</p>
           <ul class="enforced">
             <li><span>Logs, usage by project, receipts and spend alerts in the console</span><span class="where">next</span></li>
-            <li><span>Addresses on nuved.app, apart from the platform's own domain</span><span class="where">next</span></li>
             <li><span>Deploy from a folder, with a history of deploys and one-click rollback</span><span class="where">later</span></li>
             <li><span>Your code in a git repository we host, with a download and a mirror to GitHub</span><span class="where">later</span></li>
             <li><span>Agents that write and deploy a service from a prompt on the website</span><span class="where">later</span></li>
@@ -1674,7 +1671,7 @@ data:
           <li><a href="https://github.com/nuved/platform-gitops">Source on GitHub</a></li>
           <li><a href="mailto:hello@nuved.io?subject=Invitation%20to%20the%20Nuved%20preview">Request an invitation</a></li>
         </ul>
-        <p>Preview, built and operated by one engineer. This page is served from the platform itself, deployed from <code>apps/www</code> by Argo CD.</p>
+        <p>Preview, built and operated by one engineer. This page runs on the console's machine, built from <code>apps/www</code>.</p>
       </div>
     </footer>
     

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Everything Nuved does</title>
-<meta name="description" content="What actually runs behind a Nuved project: who signs you in, what a top-up creates, how an agent token reaches one namespace and nothing else, and which rules the cluster refuses to break.">
+<meta name="description" content="Every Nuved feature you can use today and where to find it, with what is still being built listed apart.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230B5563'/%3E%3Cpath d='M9 23V9l14 14V9' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='square'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="styles/tokens.css">
@@ -149,7 +149,7 @@ footer p{font-size:var(--text-s); color:var(--color-text-dim); margin:0; max-wid
       <h2>Money</h2>
       <ul class="enforced">
         <li><span>Top up by card through Stripe (test mode during the preview)</span><span class="where">console</span></li>
-        <li><span>Charged by the hour for what each project reserves, at rates derived daily from our AWS bill</span><span class="where">console, API</span></li>
+        <li><span>Charged by the hour for what each project reserves, at rates derived from our real AWS bill of September 2026</span><span class="where">console, API</span></li>
         <li><span>At zero, services pause and nothing is deleted; a top-up brings them back as they were</span><span class="where">automatic</span></li>
       </ul>
     </section>
@@ -193,7 +193,6 @@ footer p{font-size:var(--text-s); color:var(--color-text-dim); margin:0; max-wid
       <p class="kicker">Not live yet. Listed so you know what is coming, not as a promise of a date.</p>
       <ul class="enforced">
         <li><span>Logs, usage by project, receipts and spend alerts in the console</span><span class="where">next</span></li>
-        <li><span>Addresses on nuved.app, apart from the platform's own domain</span><span class="where">next</span></li>
         <li><span>Deploy from a folder, with a history of deploys and one-click rollback</span><span class="where">later</span></li>
         <li><span>Your code in a git repository we host, with a download and a mirror to GitHub</span><span class="where">later</span></li>
         <li><span>Agents that write and deploy a service from a prompt on the website</span><span class="where">later</span></li>
@@ -212,7 +211,7 @@ footer p{font-size:var(--text-s); color:var(--color-text-dim); margin:0; max-wid
       <li><a href="https://github.com/nuved/platform-gitops">Source on GitHub</a></li>
       <li><a href="mailto:hello@nuved.io?subject=Invitation%20to%20the%20Nuved%20preview">Request an invitation</a></li>
     </ul>
-    <p>Preview, built and operated by one engineer. This page is served from the platform itself, deployed from <code>apps/www</code> by Argo CD.</p>
+    <p>Preview, built and operated by one engineer. This page runs on the console's machine, built from <code>apps/www</code>.</p>
   </div>
 </footer>
 

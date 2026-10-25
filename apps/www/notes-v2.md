@@ -3,7 +3,8 @@
 The three pages now take every value from `styles/tokens.css`, the console's v2 tokens
 (plans-backend-t07 `design/v2/tokens-v2.css`, the brain's final file, differing only in the
 two font URLs), set in Geist Sans and Geist Mono, light by default and dark when the system
-asks. Copy and claims are unchanged. The mesh is one rule, `.hero .head::before` on
+asks. Copy is unchanged apart from the false claims the brain ruled on ("Claims corrected"
+below). The mesh is one rule, `.hero .head::before` on
 `index.html`, behind the headline only.
 
 ## What changed, page by page
@@ -26,7 +27,8 @@ asks. Copy and claims are unchanged. The mesh is one rule, `.hero .head::before`
 
 Taken by `tools/www-shots/shots.cjs` from the rendered `configmap.yaml` (live rate card 3),
 Chromium from plans-backend/web's @playwright/test 1.63.0, device scale 1, full page. Every PNG
-is under 1 MB, so all twelve are in `shots/`. Contrast is every visible text element against its
+is under 1 MB, so all twelve are in `shots/`; how-it-works and features were re-shot after the
+claims were corrected, the homepage's PNGs came out byte-identical. Contrast is every visible text element against its
 painted background (floor 4.5:1, or 3:1 at 24 px and up); inside the hero it is also measured
 against the real pixels under each line of text, from a shot with the text made transparent,
 because the mesh is a background image the colour walk cannot see. Targets are every `a`,
@@ -39,14 +41,14 @@ its 24 px from vertical padding.
 | `index-1440-dark.png` | 703,029 | 4,654 | 0 fails, lowest 7.66 | 36 px (Everything); inline 24 | none | .head::before | worst 8.13 |
 | `index-390-light.png` | 634,637 | 8,272 | 0 fails, lowest 4.51 | 44 px (nuved.); inline 27 | none | .head::before | worst 5.45 |
 | `index-390-dark.png` | 633,678 | 8,272 | 0 fails, lowest 7.66 | 44 px (nuved.); inline 27 | none | .head::before | worst 8.13 |
-| `how-it-works-1440-light.png` | 573,719 | 4,220 | 0 fails, lowest 5.13 | 36 px (Everything) | none | none | n/a |
-| `how-it-works-1440-dark.png` | 575,966 | 4,220 | 0 fails, lowest 6.11 | 36 px (Everything) | none | none | n/a |
-| `how-it-works-390-light.png` | 557,395 | 7,097 | 0 fails, lowest 5.13 | 44 px (nuved.) | none | none | n/a |
-| `how-it-works-390-dark.png` | 560,853 | 7,097 | 0 fails, lowest 6.11 | 44 px (nuved.) | none | none | n/a |
-| `features-1440-light.png` | 216,725 | 2,478 | 0 fails, lowest 5.13 | 24 px (api.nuved.io/docs) | none | none | n/a |
-| `features-1440-dark.png` | 218,629 | 2,478 | 0 fails, lowest 7.31 | 24 px (api.nuved.io/docs) | none | none | n/a |
-| `features-390-light.png` | 204,745 | 3,441 | 0 fails, lowest 5.13 | 24 px (api.nuved.io/docs) | none | none | n/a |
-| `features-390-dark.png` | 206,148 | 3,441 | 0 fails, lowest 7.31 | 24 px (api.nuved.io/docs) | none | none | n/a |
+| `how-it-works-1440-light.png` | 549,225 | 4,104 | 0 fails, lowest 5.13 | 36 px (Everything) | none | none | n/a |
+| `how-it-works-1440-dark.png` | 551,315 | 4,104 | 0 fails, lowest 6.11 | 36 px (Everything) | none | none | n/a |
+| `how-it-works-390-light.png` | 528,855 | 6,791 | 0 fails, lowest 5.13 | 44 px (nuved.) | none | none | n/a |
+| `how-it-works-390-dark.png` | 532,814 | 6,791 | 0 fails, lowest 6.11 | 44 px (nuved.) | none | none | n/a |
+| `features-1440-light.png` | 209,841 | 2,420 | 0 fails, lowest 5.13 | 24 px (api.nuved.io/docs) | none | none | n/a |
+| `features-1440-dark.png` | 211,754 | 2,420 | 0 fails, lowest 7.31 | 24 px (api.nuved.io/docs) | none | none | n/a |
+| `features-390-light.png` | 198,515 | 3,384 | 0 fails, lowest 5.13 | 24 px (api.nuved.io/docs) | none | none | n/a |
+| `features-390-dark.png` | 199,946 | 3,384 | 0 fails, lowest 7.31 | 24 px (api.nuved.io/docs) | none | none | n/a |
 
 The lowest light pair, 4.51:1, is the preview badge (`warn` on `warn-bg`), the same pair the
 console's review measured at the floor's edge; one shade darker on that background breaks it.
@@ -85,25 +87,51 @@ What I saw in each, looking at every band:
 | horizontal scroll | `scrollWidth` = 390 on all six phone runs | none | pass |
 | 5, 6, 11, 12, 13, 15 | n/a: static pages, no form, no fetch, no destructive action | | n/a |
 
-## Claims that may no longer be true (left as they are, for the brain)
+## Claims corrected (brain's ruling, 2026-10-26)
 
-Per the surprise rule, none of these words were changed.
+The first commit left these as they were and listed them; the brain then ruled on the facts:
+the AWS and kops cluster is gone; the site and the console run as docker compose on the Hetzner
+box in Germany; there is no Argo CD and no IRSA; rates in FACTS.md's wording ("derived from the
+real AWS bill"); `nuved.io` is the console, API and site and `nuved.app` is what runs on the box.
+Only the false sentences changed, each read aloud against ui-copy (on-screen sentences at most
+20 words, no brand flourish). Where nothing true could stand in for a list row, the row went.
 
-1. `how-it-works.html`, "What this is, honestly": "runs on a single small AWS machine managed by
-   kops". README (since 2026-10-07): the AWS cluster is gone; the site runs as the compose
-   project `nuved-website` on the Hetzner box.
-2. `how-it-works.html`, after the lanes, and the footers of how-it-works and features: "deployed
-   from `apps/www` ... by Argo CD, into a namespace with the same quota ...". The box serves it
-   through `hetzner/deploy.sh`, not Argo CD.
-3. `how-it-works.html`, enforcement list: "No static AWS keys anywhere in the cluster ... IRSA".
-   An AWS-specific claim about a cluster the README says is gone.
-4. `features.html`, Money: "at rates derived daily from our AWS bill". The live card is card 3,
-   since 2026-09-22, derived from the 2026-09-15 to 09-20 AWS bill; nothing has re-derived it
-   since. The homepage's "derived from our AWS bill" is true of that card, without "daily".
-5. Exposed addresses disagree between pages: the homepage says `<service>-<org>.nuved.app`,
-   how-it-works says `<service>-<org>.nuved.io`, and features lists "Addresses on nuved.app" under
-   "Being built".
-6. `features.html` carries how-it-works' meta description word for word.
+| # | page | before | after | why |
+|---|---|---|---|---|
+| 1 | `how-it-works.html` | One node. The whole platform, this page included, runs on a single small AWS machine managed by kops. There is no high availability: when that node restarts, everything on it goes down with it. | One machine. The console, the API and this page run with docker compose on one Hetzner machine in Germany. There is no high availability: when that machine restarts, everything on it goes down with it. | the AWS/kops cluster is gone; console, API and site run as docker compose on the Hetzner box |
+| 2 | `how-it-works.html` | This page is one of those Services. It is deployed from `apps/www` in the public manifests repo by Argo CD, into a namespace with the same quota, the same policies and the same Gateway as a customer's — no exception for being ours. | This page is built from `apps/www` in the public manifests repo. It runs on the console's machine, in its own read-only container. | no Argo CD, no namespace: the site is a read-only container (uid 101, read-only root) on the box |
+| 3 | `how-it-works.html` | Preview, built and operated by one engineer. This page is served from the platform itself, deployed from `apps/www` by Argo CD. | Preview, built and operated by one engineer. This page runs on the console's machine, built from `apps/www`. | no Argo CD |
+| 4 | `features.html` | Preview, built and operated by one engineer. This page is served from the platform itself, deployed from `apps/www` by Argo CD. | Preview, built and operated by one engineer. This page runs on the console's machine, built from `apps/www`. | no Argo CD |
+| 5 | `how-it-works.html` | An Argo AppProject per platform workspace, locked to that namespace, this repo, and five resource kinds · tag `Argo CD` | (row removed) | no Argo CD now: the row is removed, nothing true replaces it |
+| 6 | `how-it-works.html` | No static AWS keys anywhere in the cluster: service accounts assume roles through the cluster's own OIDC issuer · tag `IRSA` | (row removed) | no AWS cluster and no IRSA now: the row is removed |
+| 7 | `how-it-works.html` | Cloudflare proxies `*.nuved.io` to the node's fixed address | Cloudflare proxies `*.nuved.app` to the node's fixed address | addresses unified: nuved.io is the console, API and site; nuved.app is what runs on the box |
+| 8 | `how-it-works.html` | `<service>-<org>.nuved.io` for your first project, `<service>-<org>-<project>.nuved.io` for the rest. | `<service>-<org>.nuved.app` for your first project, `<service>-<org>-<project>.nuved.app` for the rest. | the same unification; the homepage already said nuved.app |
+| 9 | `features.html` | Charged by the hour for what each project reserves, at rates derived daily from our AWS bill | Charged by the hour for what each project reserves, at rates derived from our real AWS bill of September 2026 | the rate card job is off on the box; card 3 (since 2026-09-22) was derived from the AWS bill of 2026-09-15 to 09-20, FACTS.md's 'derived from the real AWS bill' |
+| 10 | `features.html` | Addresses on nuved.app, apart from the platform's own domain · tag `next` (Being built) | (row removed) | FACTS.md lists *.nuved.app as live, so it is not 'being built'; the row is removed |
+| 11 | `features.html` | meta description: What actually runs behind a Nuved project: who signs you in, what a top-up creates, how an agent token reaches one namespace and nothing else, and which rules the cluster refuses to break. (how-it-works' own, word for word) | meta description: Every Nuved feature you can use today and where to find it, with what is still being built listed apart. | its own description, from the page's lede |
+
+The homepage needed no change: its rates line ("Rates since 22 September 2026, derived from our
+AWS bill") is true of card 3, and its addresses were already `nuved.app`.
+
+## Still not what runs (not changed, for the brain)
+
+plans-backend `deploy/hetzner/README.md` (read 2026-10-26; I did not check the live console)
+says the console on the box runs with `CLUSTER=none`: "a project created here is its repository
+alone, listed ready and `unplaced` until a placement puts it on a machine", and "logs, runs and
+the rate card job are off". Present-tense sentences that describe a running cluster therefore
+outrun the box, and they are more than the six above. Rewriting them is a product decision,
+not a restyle, so they stand as they were:
+
+- `index.html`: the ledger's "It can" list (deploy with kubectl, read logs, restart and scale,
+  a public address in seconds), "The cluster itself holds every line below", the FAQ's "they are
+  the cluster's own quotas and network rules", and "they fall when the machines get cheaper"
+  (the rate card job is off). The terminal and console panel are marked "Example." already.
+- `how-it-works.html`: steps 2 to 4 (a `Tenant` in the cluster, the tenancy-operator's
+  namespaces, the `kube.nuved.io` proxy), the Paying, Deploying and Visitors lanes (meter every
+  ten minutes, Gateway, HTTPRoute, NetworkPolicy), and the enforcement list's tenancy-operator,
+  `kube.nuved.io`, Kyverno, CI gate and meter rows.
+- `features.html`: "Each project is its own isolated namespace", the NetworkPolicy egress line,
+  the kubeconfig download, and the `kube.nuved.io` refusal line.
 
 ## Deviations from the brief
 
@@ -122,12 +150,10 @@ Per the surprise rule, none of these words were changed.
 1. The brand: `brand/*` and every page's favicon data URI are still the teal mark. Whether the
    wordmark and favicon move to Geist ink is the operator's call; `make-wordmark.py` regenerates
    the wordmark from whichever face it is pointed at.
-2. `hetzner/deploy.sh` archives the tracked `apps/www`, so the 5.8 MB (5,680 KiB) of `shots/` now travel to
-   the box on every deploy and are deleted there after unpacking. A one-line
-   `apps/www/.gitattributes` (`shots/ export-ignore`) would keep them home; not added, since it
-   changes what the brain's deploy sends.
+2. Settled: `apps/www/.gitattributes` export-ignores `shots/` and `tools/` (brain, 2026-10-26).
+   `git archive HEAD apps/www` lists 16 entries under them without it and 0 with it, and still
+   carries `configmap.yaml` and `hetzner/`.
 3. The fonts are the console's variable files, 56,800 + 58,048 bytes (112 KiB); DESIGN-v2 says
-   72 KiB together, which these files are not. The ConfigMap is 262,225 bytes of 1,048,576.
+   72 KiB together, which these files are not. The ConfigMap is 261,553 bytes of 1,048,576.
 4. The final tokens make 14 px the phone minimum (`--text-xs`), so the homepage terminal at 390
    wraps its longest lines once where the old 12 px fit them.
-5. README's page table still lists two pages; `features.html` predates this task and is the third.

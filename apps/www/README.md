@@ -14,6 +14,7 @@ admission, the same validation gate in CI, and the same shared Gateway as
 |---|---|---|
 | `index.html` | `/` | the product page: what an agent can and cannot do, what it costs, the questions a buyer asks |
 | `how-it-works.html` | `/how-it-works.html` | the mechanism: the four steps, the four request paths, what the platform refuses to run, and what is honestly not built |
+| `features.html` | `/features` | everything you can use today, each line tagged with where, and what is being built listed apart |
 
 The split is deliberate. The homepage names no components and shows no YAML,
 because someone deciding whether to use this does not care yet. Everything
@@ -82,11 +83,11 @@ prints these on every run and refuses to write a ConfigMap over the cap:
 | | bytes |
 |---|--:|
 | `index.html` | 31,751 |
-| `how-it-works.html` | 21,613 |
-| `features.html` | 14,443 |
+| `how-it-works.html` | 21,161 |
+| `features.html` | 14,235 |
 | `styles/tokens.css`, inlined into each of the three | 11,298 |
 | the two fonts | 114,848 |
-| `configmap.yaml` | 262,225 |
+| `configmap.yaml` | 261,553 |
 
 ## On the Hetzner box (since 2026-10-07)
 
