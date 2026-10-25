@@ -112,9 +112,9 @@ Per the surprise rule, none of these words were changed.
 - `styles/tokens.css` is not served as a file. A ConfigMap key cannot contain `/`, so render.sh
   writes the file into each page in place of its `<link>`. The source pages still load it from
   `styles/` when opened from disk, which is why its two font URLs start with `../`.
-- Check 1 does not come back empty: `brand/make-wordmark.py` names `schibsted-grotesk.woff2`.
-  It draws the brand wordmark (the `brand/` SVG and PNG that Authentik and mail use) from
-  Schibsted at 700; re-pointing it at Geist redraws the logo, which waits for the operator.
+- Check 1 does not come back empty: line 7 of `brand/make-wordmark.py` names the old display
+  face's file. It draws the brand wordmark (the `brand/` SVG and PNG that Authentik and mail use)
+  from that face at 700; re-pointing it at Geist redraws the logo, which waits for the operator.
   Its committed output is unchanged; regenerating it now needs the font from `e84aeec`.
 
 ## Open items
