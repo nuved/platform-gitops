@@ -27,8 +27,8 @@ below). The mesh is one rule, `.hero .head::before` on
 
 Taken by `tools/www-shots/shots.cjs` from the rendered `configmap.yaml` (live rate card 3),
 Chromium from plans-backend/web's @playwright/test 1.63.0, device scale 1, full page. Every PNG
-is under 1 MB, so all twelve are in `shots/`; how-it-works and features were re-shot after the
-claims were corrected, the homepage's PNGs came out byte-identical. Contrast is every visible text element against its
+is under 1 MB, so all twelve are in `shots/` (allowed by `.lfs-ok` at the repo root); all twelve
+were re-shot after the verifier's polish below. Contrast is every visible text element against its
 painted background (floor 4.5:1, or 3:1 at 24 px and up); inside the hero it is also measured
 against the real pixels under each line of text, from a shot with the text made transparent,
 because the mesh is a background image the colour walk cannot see. Targets are every `a`,
@@ -38,13 +38,13 @@ its 24 px from vertical padding.
 | shot | bytes | page px | contrast | smallest target | overflow | gradients | hero pixels |
 |---|--:|--:|---|---|---|---|---|
 | `index-1440-light.png` | 710,469 | 4,654 | 0 fails, lowest 4.51 | 36 px (Everything); inline 24 | none | .head::before | worst 5.5 |
-| `index-1440-dark.png` | 703,029 | 4,654 | 0 fails, lowest 7.66 | 36 px (Everything); inline 24 | none | .head::before | worst 8.13 |
-| `index-390-light.png` | 634,637 | 8,272 | 0 fails, lowest 4.51 | 44 px (nuved.); inline 27 | none | .head::before | worst 5.45 |
-| `index-390-dark.png` | 633,678 | 8,272 | 0 fails, lowest 7.66 | 44 px (nuved.); inline 27 | none | .head::before | worst 8.13 |
-| `how-it-works-1440-light.png` | 549,225 | 4,104 | 0 fails, lowest 5.13 | 36 px (Everything) | none | none | n/a |
-| `how-it-works-1440-dark.png` | 551,315 | 4,104 | 0 fails, lowest 6.11 | 36 px (Everything) | none | none | n/a |
-| `how-it-works-390-light.png` | 528,855 | 6,791 | 0 fails, lowest 5.13 | 44 px (nuved.) | none | none | n/a |
-| `how-it-works-390-dark.png` | 532,814 | 6,791 | 0 fails, lowest 6.11 | 44 px (nuved.) | none | none | n/a |
+| `index-1440-dark.png` | 703,052 | 4,654 | 0 fails, lowest 7.66 | 36 px (Everything); inline 24 | none | .head::before | worst 8.13 |
+| `index-390-light.png` | 624,455 | 7,999 | 0 fails, lowest 4.51 | 44 px (nuved.); inline 27 | none | .head::before | worst 5.45 |
+| `index-390-dark.png` | 624,089 | 7,999 | 0 fails, lowest 7.66 | 44 px (nuved.); inline 27 | none | .head::before | worst 8.13 |
+| `how-it-works-1440-light.png` | 549,873 | 4,104 | 0 fails, lowest 5.13 | 36 px (Everything) | none | none | n/a |
+| `how-it-works-1440-dark.png` | 551,565 | 4,104 | 0 fails, lowest 6.11 | 36 px (Everything) | none | none | n/a |
+| `how-it-works-390-light.png` | 528,105 | 6,791 | 0 fails, lowest 5.13 | 44 px (nuved.) | none | none | n/a |
+| `how-it-works-390-dark.png` | 531,803 | 6,791 | 0 fails, lowest 6.11 | 44 px (nuved.) | none | none | n/a |
 | `features-1440-light.png` | 209,841 | 2,420 | 0 fails, lowest 5.13 | 24 px (api.nuved.io/docs) | none | none | n/a |
 | `features-1440-dark.png` | 211,754 | 2,420 | 0 fails, lowest 7.31 | 24 px (api.nuved.io/docs) | none | none | n/a |
 | `features-390-light.png` | 198,515 | 3,384 | 0 fails, lowest 5.13 | 24 px (api.nuved.io/docs) | none | none | n/a |
@@ -63,9 +63,9 @@ What I saw in each, looking at every band:
   fills except the walled-off well and the warn badge. Dark: the same layout on #000, the mesh
   deeper and still only behind the headline, the primary pill inverted to near-white.
 - **index, 390.** Wordmark row, then the six nav items in two rows of 44 px targets. The headline
-  takes three lines over the mesh; the pills go full width. The terminal's 45-character lines
-  wrap once at the phone's 14 px minimum (a token, see below); "Download kubeconfig" wraps to
-  two lines inside its 44 px button. No sideways scroll anywhere.
+  takes three lines over the mesh; the pills go full width. The terminal keeps its lines whole
+  at the phone's 14 px minimum and scrolls inside its box (398 px of text in 356); "Download
+  kubeconfig" wraps to two lines inside its 44 px button. The page itself never scrolls sideways.
 - **how-it-works, 1440 and 390.** The rail's ink dots sit on the hairline at each step's
   heading; the four lanes are hairline cards with the chain wrapping inside them; the long API
   path in the Visitors caption breaks inside the card at 390 (it pushed the page to 472 px before
@@ -86,6 +86,17 @@ What I saw in each, looking at every band:
 | 16 motion | 150 ms colour transitions on buttons and nav only; `prefers-reduced-motion` turns them off | 150–300 ms, honoured | pass |
 | horizontal scroll | `scrollWidth` = 390 on all six phone runs | none | pass |
 | 5, 6, 11, 12, 13, 15 | n/a: static pages, no form, no fetch, no destructive action | | n/a |
+
+## Polish from the verifier (gate passed at c71abe1, 2026-10-26)
+
+| # | defect | change | measured after |
+|---|---|---|---|
+| 1 | Geist Mono's ligature drew `>-<` as one long dash in `<service>-<org>` | `font-variant-ligatures:none` on every rule that sets the mono face (9 on index, 5 on each inner page) | the hyphen shows in the index ledger and the how-it-works caption (cropped and looked at) |
+| 2 | the index terminal wrapped 13 lines mid-token at 390 | at ≤ 640 px `white-space:pre; overflow-x:auto` on the terminal, the stacked grid column `minmax(0,1fr)`, and `tabindex="0"` on the `<pre>` so a keyboard can scroll it | lines whole; the box scrolls 398 px of text in 356; the page is 390 wide |
+| 3 | inline code broke mid-token (`curl -`/`fsSL`, `{se`/`rvice}`) | `overflow-wrap:break-word` instead of `anywhere`; `-fsSL` in a nowrap span; `<wbr>` after each `/` of the API path (no text changes; a copied command is the same) | at 390 every code breaks only at a space, a `/` or the pattern's own `-` |
+| 4 | render_test read only the first `<style>` and no `style=""` | every `<style>` block, `style=` in either quote, and only the `@media` condition exempt | fails on a second block, a double- and a single-quoted attribute, and a one-line `@media` rule with a literal; passes on the pages |
+| 5 | README said two pages, AppProject and Argo CD | three pages, compose project `nuved-website` on the box, `hetzner/deploy.sh` in the diagram | |
+| 6 | committed PNGs need the guard's allowlist | `.lfs-ok` at the repo root lists `apps/www/shots/*.png` with its reason | |
 
 ## Claims corrected (brain's ruling, 2026-10-26)
 
@@ -154,6 +165,6 @@ not a restyle, so they stand as they were:
    `git archive HEAD apps/www` lists 16 entries under them without it and 0 with it, and still
    carries `configmap.yaml` and `hetzner/`.
 3. The fonts are the console's variable files, 56,800 + 58,048 bytes (112 KiB); DESIGN-v2 says
-   72 KiB together, which these files are not. The ConfigMap is 261,553 bytes of 1,048,576.
-4. The final tokens make 14 px the phone minimum (`--text-xs`), so the homepage terminal at 390
-   wraps its longest lines once where the old 12 px fit them.
+   72 KiB together, which these files are not. The ConfigMap is 262,445 bytes of 1,048,576.
+4. The final tokens make 14 px the phone minimum (`--text-xs`), too wide for the terminal's
+   longest lines at 390; since the polish they scroll inside the box instead of wrapping.

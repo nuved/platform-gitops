@@ -1,13 +1,14 @@
 # apps/www — the nuved.io website
 
-Two pages, running on the platform as an ordinary tenant workload. They get no
-exception for being ours: the same AppProject boundary, the same Kyverno rules at
-admission, the same validation gate in CI, and the same shared Gateway as
-`apps/api`.
+Three static pages, served by nginx-unprivileged as the compose project
+`nuved-website` on the Hetzner box, beside the console. `render.sh` turns the sources
+into the generated ConfigMaps, and `hetzner/deploy.sh` unpacks those on the box
+("On the Hetzner box" below). There is no Argo CD or AppProject behind it any more;
+the cluster sections further down describe how it ran before 2026-10-07.
 
 ```
-*.html, styles/tokens.css, *.woff2  ──render.sh──►  configmap.yaml  ──Argo CD──►  nuved-www
-                                                                 nginx-unprivileged
+*.html, styles/tokens.css, *.woff2  ──render.sh──►  configmap.yaml  ──hetzner/deploy.sh──►  nuved-website
+                                                                                             nginx-unprivileged
 ```
 
 | page | serves | what it says |
@@ -20,7 +21,7 @@ The split is deliberate. The homepage names no components and shows no YAML,
 because someone deciding whether to use this does not care yet. Everything
 technical lives one click away.
 
-Both pages may only claim what runs. That rule comes from
+Every page may only claim what runs. That rule comes from
 `docs/superpowers/specs/2026-09-15-agent-safe-platform-design.md` in
 platform-cluster, and it is why the page talks about `kubectl` with a scoped
 kubeconfig rather than the `nuved deploy` command in the design mock: the mock
@@ -61,7 +62,8 @@ git commit -am "..." && git push
 ```
 
 The pages take every value from `styles/tokens.css`; a hex colour or a px length
-in a page's `<style>` outside an `@media` condition fails `render_test.sh`. When
+in any of a page's `<style>` blocks or `style=""` attributes (an `@media` condition
+excepted) fails `render_test.sh`. When
 the console's tokens change, copy its file over `styles/tokens.css` and put the two
 font URLs back to `url(../Geist-Variable.woff2)` and `url(../GeistMono-Variable.woff2)`.
 To see a change, shoot it (Playwright from plans-backend/web; nothing is fetched):
@@ -82,12 +84,12 @@ prints these on every run and refuses to write a ConfigMap over the cap:
 
 | | bytes |
 |---|--:|
-| `index.html` | 31,751 |
-| `how-it-works.html` | 21,161 |
-| `features.html` | 14,235 |
+| `index.html` | 32,166 |
+| `how-it-works.html` | 21,406 |
+| `features.html` | 14,455 |
 | `styles/tokens.css`, inlined into each of the three | 11,298 |
 | the two fonts | 114,848 |
-| `configmap.yaml` | 261,553 |
+| `configmap.yaml` | 262,445 |
 
 ## On the Hetzner box (since 2026-10-07)
 

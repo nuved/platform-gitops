@@ -20,10 +20,11 @@ body{
   font-family:var(--font-sans); font-size:var(--text-m); line-height:var(--leading-body);
   -webkit-font-smoothing:antialiased;
 }
-code,.mono{font-family:var(--font-mono); font-variant-numeric:tabular-nums}
-/* code inside a sentence: one step smaller than the words, in ink; it breaks rather than widen the page */
-code{font-size:var(--text-s); color:var(--color-text); overflow-wrap:anywhere}
+code,.mono{font-family:var(--font-mono); font-variant-ligatures:none; font-variant-numeric:tabular-nums}
+/* code inside a sentence: one step smaller than the words, in ink; a token too long for a line breaks rather than widen the page */
+code{font-size:var(--text-s); color:var(--color-text); overflow-wrap:break-word}
 .where code{font-size:inherit; color:inherit}
+.nw{white-space:nowrap}
 a{color:var(--color-link)}
 a:hover{color:var(--color-link-hover)}
 :focus-visible{outline:var(--size-focus) solid var(--color-focus); outline-offset:var(--size-focus)}
@@ -60,9 +61,9 @@ section{padding-top:var(--space-20)}
 .rail li{position:relative; padding:0 0 var(--space-8) var(--space-7)}
 .rail li:last-child{padding-bottom:var(--space-2)}
 .rail li::before{content:""; position:absolute; left:calc((var(--size-swatch) + var(--size-border-strong)) / -2); top:var(--space-2); width:var(--size-swatch); height:var(--size-swatch); background:var(--color-text); border-radius:var(--radius-pill)}
-.step-n{font-family:var(--font-mono); font-size:var(--text-s); font-weight:var(--font-weight-medium); color:var(--color-text-dim); margin-right:var(--space-3)}
+.step-n{font-family:var(--font-mono); font-variant-ligatures:none; font-size:var(--text-s); font-weight:var(--font-weight-medium); color:var(--color-text-dim); margin-right:var(--space-3)}
 .rail p{margin:var(--space-2) 0 0; color:var(--color-text-dim); max-width:64ch}
-.by{font-family:var(--font-mono); font-size:var(--text-s); font-weight:var(--font-weight-medium); color:var(--color-text)}
+.by{font-family:var(--font-mono); font-variant-ligatures:none; font-size:var(--text-s); font-weight:var(--font-weight-medium); color:var(--color-text)}
 
 /* the flow diagram, built from boxes so it reflows instead of scaling down */
 .flow{display:flex; flex-direction:column; gap:var(--space-4); margin:0 0 var(--space-5)}
@@ -71,7 +72,7 @@ section{padding-top:var(--space-20)}
 .chain{display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-2); margin:0; padding:0; list-style:none}
 .chain li{display:flex; align-items:center; gap:var(--space-2)}
 .node{display:inline-block; border:var(--size-border) solid var(--color-line); border-radius:var(--radius-m); padding:var(--space-1) var(--space-3);
-  font-family:var(--font-mono); font-size:var(--text-s); background:var(--color-sunken); color:var(--color-text); white-space:nowrap}
+  font-family:var(--font-mono); font-variant-ligatures:none; font-size:var(--text-s); background:var(--color-sunken); color:var(--color-text); white-space:nowrap}
 .node.you{border-color:var(--color-line-control); background:var(--color-surface)}
 .node.wall{border-color:var(--color-ok); color:var(--color-ok); background:var(--color-ok-bg)}
 .node.stop{border-color:var(--color-bad); color:var(--color-bad); background:var(--color-bad-bg)}
@@ -84,7 +85,7 @@ section{padding-top:var(--space-20)}
   padding:var(--space-4) 0; border-bottom:var(--size-border) solid var(--color-line)}
 .enforced li > span:first-child{flex:1 1 24ch; min-width:0}
 .where{display:inline-flex; align-items:center; gap:var(--space-1); min-height:var(--size-chip); padding:0 var(--space-2); flex:none;
-  font-family:var(--font-mono); font-size:var(--text-xs); color:var(--color-text-dim); background:var(--color-sunken);
+  font-family:var(--font-mono); font-variant-ligatures:none; font-size:var(--text-xs); color:var(--color-text-dim); background:var(--color-sunken);
   border:var(--size-border) solid var(--color-line); border-radius:var(--radius-s); white-space:nowrap}
 .where a{display:inline-flex; align-items:center; min-height:var(--size-chip)}
 
@@ -183,7 +184,7 @@ footer p{font-size:var(--text-s); color:var(--color-text-dim); margin:0; max-wid
     <section id="tools">
       <h2>Tools</h2>
       <ul class="enforced">
-        <li><span>The CLI: <code>curl -fsSL https://get.nuved.io/install.sh | sh</code></span><span class="where">get.nuved.io</span></li>
+        <li><span>The CLI: <code>curl <span class="nw">-fsSL</span> https://get.nuved.io/install.sh | sh</code></span><span class="where">get.nuved.io</span></li>
         <li><span>The whole API, documented, with every call the console makes</span><span class="where"><a href="https://api.nuved.io/docs">api.nuved.io/docs</a></span></li>
       </ul>
     </section>

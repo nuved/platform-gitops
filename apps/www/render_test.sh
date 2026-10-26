@@ -12,11 +12,13 @@ grep -qF '€0.105<!--/rate-->' index.html || { echo "FAIL: render.sh must not r
 [ "$(grep -cF 'src: url(Geist-Variable.woff2)' configmap.yaml)" = 3 ] || { echo "FAIL: styles/tokens.css is not inlined into the three pages with bare font URLs"; exit 1; }
 ! grep -qF 'url(../' configmap.yaml || { echo "FAIL: a rendered page still reaches for ../"; exit 1; }
 ! grep -qF 'href="styles/tokens.css"' configmap.yaml || { echo "FAIL: a rendered page still links styles/tokens.css"; exit 1; }
-# Page CSS takes its values from the tokens: no hex colour and no px length in a page's <style>,
-# except in an @media condition.
+# Page CSS takes its values from the tokens: no hex colour and no px length in any of a page's
+# <style> blocks (an @media condition excepted, not the rules inside it) or style="" attributes.
+lit='#[0-9A-Fa-f]{3,8}\b|[0-9]px'
 for page in index.html how-it-works.html features.html; do
-  bad=$(awk '/<style>/{s=1} s&&!/@media/' "$page" | awk '/<\/style>/{exit} 1' | grep -nE '#[0-9A-Fa-f]{3,8}\b|[0-9]px' || true)
-  [ -z "$bad" ] || { echo "FAIL: $page has literals outside the tokens:"; echo "$bad"; exit 1; }
+  css=$(awk '/<style>/{s=1} s{print} /<\/style>/{s=0}' "$page" | sed -E 's/@media[^{]*//' | grep -nE "$lit" || true)
+  attr=$(grep -noE "style=(\"[^\"]*\"|'[^']*')" "$page" | grep -E "$lit" || true)
+  [ -z "$css$attr" ] || { echo "FAIL: $page has literals outside the tokens:"; echo "$css"; echo "$attr"; exit 1; }
 done
 git checkout -- configmap.yaml brand.yaml www.yaml 2>/dev/null || true
 echo PASS

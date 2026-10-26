@@ -1,0 +1,2 @@
+# Allowlist for the commit guard: paths here may be committed though they look like build artifacts.
+apps/www/shots/*.png  # the site's design v2 record (2026-10-26): full-page shots of the three pages at 1440 and 390, light and dark, each under 1 MB; read when a page changes; apps/www/.gitattributes keeps them out of deploy.sh's archive; not build output
