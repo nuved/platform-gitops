@@ -17,9 +17,11 @@ name: nuved-website
 
 services:
   nuved-website:
-    # The multi-arch index of nginxinc/nginx-unprivileged:1.31.1-alpine, by digest (Docker Hub,
-    # 2026-10-07): the line the box's own nginx runs. Keeps its pid and every *_temp_path in /tmp.
-    image: nginxinc/nginx-unprivileged:1.31.1-alpine@sha256:cc300bd2e8776708a8c2c8686a74f06eadf221c5ce01e85d0e821955d7a730ab
+    # The multi-arch index of the official nginx:1.31.9-alpine, by digest (the same one the box's edge
+    # runs). nginxinc/nginx-unprivileged stops at 1.31.7, which lacks the try_files/alias fix of 1.31.9.
+    # The official image writes its pid to /run and its temp folders to /var/cache/nginx, so both are
+    # tmpfs owned by 101 (below); user 101 and listen 8080 stay as they were.
+    image: nginx:1.31.9-alpine@sha256:90b6bd2aec278b16b98221d64deb1d6d35d164567f507ab0716e6053878315aa
     container_name: nuved-website
     restart: unless-stopped
     user: "101:101"
@@ -44,7 +46,7 @@ services:
       edge-shared:
         aliases: [nuved-website]
     read_only: true
-    tmpfs: [/tmp]
+    tmpfs: [/tmp, "/var/cache/nginx:rw,noexec,nosuid,nodev,uid=101,gid=101,mode=0755", "/run:rw,noexec,nosuid,nodev,uid=101,gid=101,mode=0755"]
     cap_drop: [ALL]
     security_opt: ["no-new-privileges:true"]
     mem_limit: 128m
